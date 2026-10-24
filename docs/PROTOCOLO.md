@@ -50,16 +50,16 @@
      hipótese e exige ocupação simultânea demonstrada pelas interações.
    - Com nucleófilo catalítico e eletrófilo no ligante, meça d(Nu···C) ≤ 3,5–4,0 Å.
 
-## E4 — Figuras
+## E5 — Figuras
 - Use PyMOL open-source. Em cavidades profundas, cartoon semitransparente com resíduos coloridos por sub-sítio
   e uma legenda.
-- O tracejado do PyMOL indica contato **putativo**. A ligação de H confirmada vem do E5.
+- O tracejado do PyMOL indica contato **putativo**. A ligação de H confirmada vem do E4.
 - Figuras úteis:
   - redocking × cristal;
   - líder × aglicona ou análogo;
   - planar × saturado/volumoso.
 
-## E5 — Interações
+## E4 — Interações
 - O PROPKA3 define His (HID/HIE/HIP), Asp, Glu, Lys e Cys no pH do ensaio. Metais e cofatores ficam de fora do
   PDB2PQR; meça-os no PyMOL.
 - Monte a matriz resíduo × ligante por sub-sítio, com tipo, distância, ângulo e **fragmento** do ligante.

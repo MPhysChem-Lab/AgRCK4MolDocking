@@ -1,11 +1,14 @@
 {
   "name": "agrck4moldocking",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Agente de docking molecular (DiffDock + GNINA + PoseBusters + ProLIF) com portões automáticos e travas científicas",
+  "author": { "name": "fatioleg" },
   "skills": "./skills/",
+  "hooks": "./hooks/hooks.codex.json",
   "interface": {
     "displayName": "AgRCK4MolDocking",
     "shortDescription": "Docking molecular guiado, auditado e didático",
+    "longDescription": "Conduz um estudo de docking do questionário ao relatório (E0–E6) com portões determinísticos, memória por estudo, travas contra exageros, atribuição de interações por fragmento e figuras só com PyMOL open-source.",
     "developerName": "fatioleg",
     "category": "Productivity",
     "defaultPrompt": "Quero iniciar um novo estudo de docking"

@@ -14,6 +14,7 @@ python interactions_ds.py --pose pose.sdf --receptor results/interactions/recept
 from __future__ import annotations
 
 import argparse
+import json
 import io
 from pathlib import Path
 
@@ -160,12 +161,13 @@ def draw_ds(mol: Chem.Mol, rows: list[dict], path: str | Path, title: str, vdw_r
 
 
 def pose_diagram(pose_sdf: str | Path, receptor_h: str | Path, out_png: str | Path, title: str,
-                 types: list[str] | None = None, vdw: bool = True) -> list[dict]:
+                 types: list[str] | None = None, vdw: bool = True, frag_smarts: dict | None = None) -> list[dict]:
     """Run ProLIF on one pose against a protonated receptor and draw the diagram. Returns the rows."""
     import interactions
 
     protein, _ = interactions.load_protein(receptor_h)
-    _, _, mol, rows, _ = interactions.ligand_interactions(pose_sdf, protein, types or interactions.DEFAULT_TYPES)
+    _, _, mol, rows, _ = interactions.ligand_interactions(pose_sdf, protein, types or interactions.DEFAULT_TYPES,
+                                                         frag_smarts)
     vdw_rows = interactions.ligand_interactions(pose_sdf, protein, ["VdWContact"])[3] if vdw else None
     draw_ds(mol, rows, out_png, title, vdw_rows)
     return rows
@@ -178,8 +180,10 @@ def main(argv=None) -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--title", default="")
     ap.add_argument("--no-vdw", action="store_true", help="do not draw VdW-contact discs")
+    ap.add_argument("--fragments-json", help="JSON {label: SMARTS} for readable ligand fragment names")
     a = ap.parse_args(argv)
-    rows = pose_diagram(a.pose, a.receptor, a.out, a.title or Path(a.pose).stem, vdw=not a.no_vdw)
+    frag = json.loads(Path(a.fragments_json).read_text()) if a.fragments_json else None
+    rows = pose_diagram(a.pose, a.receptor, a.out, a.title or Path(a.pose).stem, vdw=not a.no_vdw, frag_smarts=frag)
     print(f"{a.out}: {len(rows)} interactions (cite the fragment column, never guess it from the picture)")
     for r in rows:
         ang = f" {r['DHA_angle_deg']:.0f}deg" if r.get("DHA_angle_deg") is not None else ""

@@ -1,0 +1,10 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": ".*", "hooks": [ { "type": "command", "command": "sh \"${PLUGIN_ROOT}/hooks/run.sh\" guard.py", "timeout": 10 } ] }
+    ],
+    "PostToolUse": [
+      { "matcher": ".*", "hooks": [ { "type": "command", "command": "sh \"${PLUGIN_ROOT}/hooks/run.sh\" lint_report.py", "timeout": 20 } ] }
+    ]
+  }
+}

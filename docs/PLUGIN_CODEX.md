@@ -1,8 +1,9 @@
 # Instalar como plugin no OpenAI Codex
 
-O Codex lê o marketplace em `.agents/plugins/marketplace.json` (marketplace `agrck`) e o manifesto do plugin em
-`plugin.json` / `.codex-plugin/plugin.json`. O plugin entrega as 6 skills. O `AGENTS.md` e os hooks são
-configurados à parte (passos 3 e 4), porque precisam de caminhos absolutos.
+O Codex lê o marketplace em `.agents/plugins/marketplace.json` (marketplace `agrck`) e o manifesto em
+`plugin.json` / `.codex-plugin/plugin.json`. O plugin entrega as 6 skills e os hooks
+(`hooks/hooks.codex.json`, caminhos via `${PLUGIN_ROOT}`). O script do passo 3 cuida do CLI e do `AGENTS.md`
+na pasta de trabalho, e serve de alternativa para instalar os hooks em versões do Codex sem hooks de plugin.
 
 ## 1. Acesso ao repositório privado
 O Codex usa o git da máquina. Use SSH com chave cadastrada no GitHub, ou HTTPS com credential helper
@@ -27,12 +28,11 @@ git clone git@github.com:fatioleg/AgRCK4MolDocking.git ~/AgRCK4MolDocking
 sh ~/AgRCK4MolDocking/scripts/install_codex.sh            # pergunta antes de alterar ~/.codex
 ```
 O script:
-- liga `agrck` em `~/.local/bin`;
-- copia `AGENTS.md` para a pasta de trabalho atual, se não existir;
-- acrescenta em `~/.codex/hooks.json` os hooks `guard.py` (PreToolUse) e `lint_report.py` (PostToolUse) com
-  caminhos absolutos.
+- liga `agrck` em `~/.local/bin`; o launcher resolve o symlink;
+- copia `AGENTS.md` para a pasta de trabalho, se não existir;
+- opcionalmente (pergunta antes) grava os mesmos hooks em `~/.codex/hooks.json` com caminhos absolutos.
 
-Depois, aprove os hooks no Codex com `/hooks`, porque hooks não gerenciados precisam de confiança.
+Em todos os casos, aprove os hooks no Codex com `/hooks`, porque hooks não gerenciados precisam de confiança.
 
 ## 4. MCP do PyMOL (opcional)
 Em `~/.codex/config.toml`:

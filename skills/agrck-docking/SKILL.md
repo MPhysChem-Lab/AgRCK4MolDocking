@@ -27,7 +27,7 @@ description: Etapas E2–E3 — roda o docking (DiffDock + minimização GNINA +
    - Diga qual é a métrica primária pré-registrada.
    - Se a posição do líder depende da métrica, diga isso no texto.
    - Diferenças de Vina < 1 kcal/mol não discriminam.
-4. Pergunte quais ligantes e poses detalhar no E4/E5. Sugira o líder, o melhor inativo e o controle.
+4. Pergunte quais ligantes e poses detalhar no E4 (interações) e E5 (figuras). Sugira o líder, o melhor inativo e o controle.
 5. Atualize o `progress.md`. Grave na `MEMORIA.md` só o RMSD validado, com a fonte.
 
 Unidades:

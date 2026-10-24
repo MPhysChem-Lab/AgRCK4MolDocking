@@ -5,7 +5,7 @@ relatório, em etapas com portões automáticos:
 
 ```
 E0 questionário → E1 estruturas/microespécies → E2 DiffDock + GNINA + PoseBusters → E3 ranking auditado
-→ E4 figuras 3D (PyMOL open-source) → E5 interações ProLIF com fragmentos → E6 relatório revisado
+→ E4 interações ProLIF com fragmentos → E5 figuras 3D (PyMOL open-source) → E6 relatório revisado
 ```
 
 Nasceu do pipeline MiniDock. A diferença está nas travas: cada erro cometido num estudo real virou uma
@@ -62,7 +62,7 @@ agrck check ID E3       # portão automático da etapa
 ## Estrutura
 
 ```
-AGENTS.md  CLAUDE.md          contexto mínimo (sempre carregado)
+AGENTS.md                     contexto mínimo (Codex; cópia em templates/workspace com CLAUDE.md)
 skills/agrck-*/SKILL.md       uma skill por etapa (carregada sob demanda)
 agents/agrck-*.md             executor (haiku), analista e redator (sonnet), revisor (opus)
 hooks/                        guard (licença, chave, exclusão) e lint de relatório

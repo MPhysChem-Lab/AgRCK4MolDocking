@@ -1,6 +1,12 @@
 #!/bin/sh
-# agrck launcher (Claude Code adds the plugin's bin/ to PATH). Python: $AGRCK_PYTHON > repo .venv > python3.
-D="$(cd "$(dirname "$0")/.." && pwd)"
+# agrck launcher (Claude Code puts the plugin's bin/ on PATH; Codex: symlink in ~/.local/bin).
+# Python: $AGRCK_PYTHON > repo .venv > python3. Symlinks are resolved so the repo is always found.
+SELF="$0"
+while [ -h "$SELF" ]; do
+  L="$(readlink "$SELF")"
+  case "$L" in /*) SELF="$L" ;; *) SELF="$(dirname "$SELF")/$L" ;; esac
+done
+D="$(cd "$(dirname "$SELF")/.." && pwd)"
 PY="${AGRCK_PYTHON:-}"
 if [ -z "$PY" ]; then
   for c in "$D/.venv/bin/python" "$D/.venv/Scripts/python.exe"; do [ -x "$c" ] && PY="$c" && break; done

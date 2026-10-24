@@ -48,7 +48,7 @@ Depois, numa pasta de trabalho: `agrck doctor`.
 O `CLAUDE.md` da raiz de um plugin não é carregado. As regras chegam pelas skills. Para ter as 8 regras sempre
 visíveis, copie `AGENTS.md` e `CLAUDE.md` do plugin para a pasta de trabalho:
 ```bash
-cp "$(agrck root)/AGENTS.md" "$(agrck root)/CLAUDE.md" .
+cp "$(agrck root)/templates/workspace/"*.md .   # (agrck new já faz isso)
 ```
 
 ## 6. Atualizar

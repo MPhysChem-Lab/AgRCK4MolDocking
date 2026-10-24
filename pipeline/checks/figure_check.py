@@ -12,6 +12,7 @@ watermark must never be cropped, masked or painted over. Use open-source PyMOL i
 from __future__ import annotations
 
 import json
+import re
 import sys
 from importlib import metadata
 from pathlib import Path
@@ -63,16 +64,24 @@ def main(argv=None) -> int:
     man = d / "figuras_manifest.json"
     errs = []
     data = json.loads(man.read_text(encoding="utf-8")) if man.exists() else {}
-    for png in sorted(d.glob("*_3d*.png")) + sorted(d.glob("Fig*.png")):
+    pngs = [p for p in d.glob("*.png") if not p.name.endswith("_2d.png")]   # 2D diagrams come from ProLIF
+    if not pngs:
+        errs.append(f"nenhuma figura 3D em {d} (agrck figure ID spec.yaml)")
+    for png in pngs:
         e = data.get(png.name)
         if e is None:
-            errs.append(f"{png.name}: sem entrada no manifesto (render sem require_objects/write_manifest)")
+            errs.append(f"{png.name}: sem entrada no manifesto (render fora do agrck figure)")
         elif not e.get("open_source"):
             errs.append(f"{png.name}: renderizada com PyMOL não open-source ({e.get('pymol')})")
-        elif any(c == 0 for c in e["objects"].values()):
-            errs.append(f"{png.name}: objeto vazio {e['objects']}")
-    if not data and not errs:
-        errs.append(f"nenhuma figura renderizada em {d} (agrck figure ID spec.yaml)")
+        elif not e.get("objects") or any(c == 0 for c in e["objects"].values()):
+            errs.append(f"{png.name}: objetos vazios/ausentes {e.get('objects')}")
+        elif any(not re.match(r"^(rec|lig_|ref_)", o) for o in e["objects"]):
+            errs.append(f"{png.name}: objeto sem prefixo rec/lig_/ref_ (nomes reservados do PyMOL quebram seleções)")
+        elif man.exists() and png.stat().st_mtime > man.stat().st_mtime + 5:
+            errs.append(f"{png.name}: imagem alterada depois do registro no manifesto")
+    for name in data:
+        if not (d / name).exists():
+            errs.append(f"{name}: no manifesto mas o arquivo não existe")
     for x in errs:
         print("✗", x)
     print("figure_check:", "OK" if not errs else f"{len(errs)} problema(s)")

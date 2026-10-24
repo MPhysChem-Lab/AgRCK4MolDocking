@@ -3,7 +3,7 @@
 O modelo de linguagem é só o "cérebro". O que torna o agente confiável é o harness em volta dele.
 
 ## 1. Loop — uma tarefa, passo a passo
-Toda etapa (E0…E6) segue o mesmo ciclo até concluir:
+Toda etapa (E0 questionário, E1 estruturas, E2 docking, E3 ranking, E4 interações, E5 figuras, E6 relatório) segue o mesmo ciclo até concluir:
 
 | Passo | No AgRCK |
 |---|---|

@@ -20,6 +20,7 @@ ensaio:
 
 ligantes:                         # papel: serie | controle_positivo | cocristal
   # microespecie: "confirmada" depois de decidir o estado de protonação no pH do ensaio (portão E1)
+  # justificativa_neutro: "pKa ..." se uma base for mantida neutra de propósito
   - {nome: "", smiles: "", atividade: "", papel: "serie", microespecie: ""}
 
 fragmentos: {}                    # opcional, rótulos legíveis: {catecol: "c1cc(O)c(O)cc1", ramnose: "C1OC(C)C(O)C(O)C1O"}
@@ -28,7 +29,9 @@ protocolo:
   poses: 30
   minimizar: true
   max_dist_sitio_A: 12.0
-  metrica_primaria: "cnn_score"   # PRÉ-REGISTRADA antes dos resultados: cnn_score | cnn_affinity | vina | le_vina
+  metrica_primaria: "cnn_score"   # PRÉ-REGISTRADA (ranking de ligantes): cnn_score | cnn_affinity | vina | le_vina
+                                  # a seleção de pose é fixa: maior CNNscore entre poses PoseBusters-válidas no sítio
+                                  # editar este arquivo depois do E0 invalida todos os portões
   composto_lider: ""              # o mais ativo no experimento (auditoria anti cherry-picking)
 
 saidas:

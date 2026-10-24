@@ -33,7 +33,11 @@ def label_atoms(mol: Chem.Mol, user_smarts: dict[str, str] | None = None) -> lis
     sugar_atoms = set()
     for patt in (SUGAR_RING, FURANOSE_RING):
         for match in mol.GetSubstructMatches(patt):
-            sugar_atoms.add(frozenset(match))
+            # a sugar carries >= 2 exocyclic O on its ring carbons (THF/THP ethers do not)
+            exo_o = sum(1 for i in match for nb in mol.GetAtomWithIdx(i).GetNeighbors()
+                        if nb.GetSymbol() == "O" and nb.GetIdx() not in match)
+            if exo_o >= 2:
+                sugar_atoms.add(frozenset(match))
     for k, ring in enumerate(sorted(sugar_atoms, key=min), start=1):
         for i in ring:
             if labels[i] is None:

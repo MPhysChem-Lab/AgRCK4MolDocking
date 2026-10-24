@@ -6,7 +6,7 @@ REPO="$(cd "$(dirname "$0")/.." && pwd)"
 mkdir -p "$HOME/.local/bin"
 ln -sf "$REPO/bin/agrck" "$HOME/.local/bin/agrck"
 echo "agrck -> $HOME/.local/bin/agrck"
-[ -f AGENTS.md ] || { cp "$REPO/AGENTS.md" AGENTS.md; echo "AGENTS.md copiado para $(pwd)"; }
+[ -f AGENTS.md ] || { cp "$REPO/templates/workspace/AGENTS.md" AGENTS.md; echo "AGENTS.md copiado para $(pwd)"; }
 
 HOOKS="$HOME/.codex/hooks.json"
 printf "Adicionar hooks do AgRCK em %s? [s/N] " "$HOOKS"

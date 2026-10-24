@@ -12,7 +12,7 @@ preenchido, use-o e pergunte só o que faltar.
 
 1. Rode `agrck status`. Se houver estudo aberto, pergunte se quer continuá-lo antes de criar outro.
 2. Peça um nome curto e rode `agrck new <ID>`.
-3. Pergunte em **4 blocos**. Use a ferramenta de perguntas com opções, no máximo 4 perguntas por chamada.
+3. Pergunte em **4 blocos** (no máximo 4 perguntas por chamada), recomendada primeiro.
 
 | Bloco | Pergunta | Padrão sugerido |
 |---|---|---|
@@ -27,7 +27,8 @@ preenchido, use-o e pergunte só o que faltar.
 | | Qual é o composto mais ativo (líder)? | o de maior atividade |
 | D. Protocolo | Poses e minimização? | 30 poses + minimizar |
 | | Métrica primária (pré-registro, ANTES dos resultados)? | `cnn_score` dentro do sítio |
-| | Onde rodar (local / ssh)? | onde o `agrck doctor` passar |
+| | Onde rodar (local / ssh)? | onde o `agrck doctor` passar, incluindo o PyMOL open-source |
+| | Relatório em LaTeX? Qual instituição vai no cabeçalho? | Markdown; LaTeX exige `saidas.instituicao` |
 
 4. Explique o pré-registro em uma frase: "fixamos a métrica antes de ver os números para não escolher a que
    favorece o composto que queremos". Avise também que todas as métricas serão relatadas.

@@ -1,9 +1,9 @@
 ---
 name: agrck-interacoes
-description: Etapa E5 — mapeia interações proteína-ligante (receptor protonado PROPKA + ProLIF com critério de distância e ângulo), atribui cada interação ao fragmento do ligante (anel, açúcar, substituinte) e monta a matriz resíduo × ligante. Use quando o usuário pedir interações, diagramas 2D ou explicação de por que um composto é ativo.
+description: Etapa E4 — mapeia interações proteína-ligante (receptor protonado PROPKA + ProLIF com critério de distância e ângulo), atribui cada interação ao fragmento do ligante (anel, açúcar, substituinte) e monta a matriz resíduo × ligante. Use quando o usuário pedir interações, diagramas 2D ou explicação de por que um composto é ativo.
 ---
 
-# E5 — Interações e fragmentos
+# E4 — Interações e fragmentos
 
 1. Rode `agrck interactions <ID>`, que cobre todos os ligantes. Ele gera:
    - `results/interactions/interactions.csv`, com a coluna `ligand_fragment`;
@@ -19,4 +19,4 @@ description: Etapa E5 — mapeia interações proteína-ligante (receptor proton
    - Tracejado do PyMOL não é evidência.
 5. Monte a matriz resíduo × ligante, agrupada por sub-sítio, com tipo, distância e ângulo. Destaque o que
    diferencia ativos de inativos. Se nada diferencia, diga isso.
-6. Rode `agrck check <ID> E5`. Delegue a montagem da tabela ao `agrck-analista`.
+6. Rode `agrck check <ID> E4`. Delegue a montagem da tabela ao `agrck-analista`.
