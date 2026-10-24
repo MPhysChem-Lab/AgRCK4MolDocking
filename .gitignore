@@ -4,10 +4,10 @@
 .venv/
 __pycache__/
 .pytest_cache/
-tools/
-estudos/
-memoria/
-results*/
+/tools/
+/estudos/
+/memoria/
+/results*/
 *.pse
 .omc/
 .tentativas.json
