@@ -1,0 +1,45 @@
+# Questionário do estudo (entrevista E0). O usuário pode preencher antes; o agente pergunta só o que faltar.
+# Deixe vazio o que não souber: o agente propõe o padrão e registra a decisão aqui.
+id: ""                            # nome curto (vira estudos/<id>)
+objetivo: "sar"                   # sar | modo_de_ligacao | triagem | validacao
+publico: "pesquisador"            # leigo | pesquisador | revisor  (ajusta o nível das explicações)
+idioma: "pt-BR"
+
+alvo:
+  nome: ""                        # ex.: acetilcolinesterase humana
+  pdb: ""                         # código (ex.: 4EY6) ou caminho .pdb; estrutura holo, mesmo organismo do ensaio
+  cadeia: "A"
+  organismo_ensaio: ""
+  manter_het: []                  # cofatores/metais essenciais (ex.: [HEM, ZN])
+  sitio_residuos: []              # resíduos-chave (ex.: [S203, H447, W86]); vazio = levantar na literatura
+
+ensaio:
+  ph: 7.4                         # pH do tampão (Ellman AChE/BChE costuma ser 8.0)
+  tipo_dado: "% inibição"         # % inibição | IC50 | Ki
+  concentracao: ""                # ex.: 100 µM
+
+ligantes:                         # papel: serie | controle_positivo | cocristal
+  # microespecie: "confirmada" depois de decidir o estado de protonação no pH do ensaio (portão E1)
+  - {nome: "", smiles: "", atividade: "", papel: "serie", microespecie: ""}
+
+fragmentos: {}                    # opcional, rótulos legíveis: {catecol: "c1cc(O)c(O)cc1", ramnose: "C1OC(C)C(O)C(O)C1O"}
+
+protocolo:
+  poses: 30
+  minimizar: true
+  max_dist_sitio_A: 12.0
+  metrica_primaria: "cnn_score"   # PRÉ-REGISTRADA antes dos resultados: cnn_score | cnn_affinity | vina | le_vina
+  composto_lider: ""              # o mais ativo no experimento (auditoria anti cherry-picking)
+
+saidas:
+  figuras: ["3d", "2d"]
+  relatorio: "markdown"           # markdown | latex | ambos
+  instituicao: ""                 # cabeçalho do relatório (nunca reaproveite marca de outro template)
+
+execucao:
+  onde: "local"                   # local | ssh
+  host_ssh: ""                    # ex.: myhome
+  dir_remoto: ""                  # repositório no host remoto
+
+orcamento:
+  max_tentativas_por_tarefa: 2    # depois disso o agente para e pergunta

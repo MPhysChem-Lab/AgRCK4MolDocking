@@ -1,0 +1,62 @@
+# MiniDock configuration. CLI flags override: --poses -> diffdock.num_poses
+
+diffdock:
+  # Hosted NIM, verified 2026-10-21 (build.nvidia.com/mit/diffdock, model v2.3).
+  url: https://health.api.nvidia.com/v1/biology/mit/diffdock
+  num_poses: 5            # API allows 1..100
+  steps: 18               # API allows 1..18
+  time_divisions: 20      # API allows 3..20
+  timeout_s: 300
+  max_retries: 3          # on 408/429/5xx/connection errors only
+  backoff_s: 5            # exponential: 5, 10, 20 s
+  # Used only if the service answers 202 (NVCF asynchronous mode).
+  poll_url: https://health.api.nvidia.com/v1/status/{req_id}
+  poll_interval_s: 5
+  max_wait_s: 900
+
+preparation:
+  embed_seed: 42          # ETKDGv3 seed for ligands without 3D coordinates
+  max_tautomers: 50
+  keep_waters: false      # in GNINA receptor (DiffDock always gets protein only)
+  keep_metals: true
+  keep_het: []            # residue names of cofactors to keep, e.g. [HEM, NAD]
+
+redocking:                # validation against ligands already bound in the input PDB
+  auto_reference: true    # no --reference-ligand: use co-crystal HETATM ligands as references
+  rmsd_success_A: 2.0     # warn when the selected pose of the same molecule is farther than this
+  min_heavy_atoms: 6      # smaller hetero groups are ignored
+  exclude_resn: []        # extra residue names to ignore (common additives are built in)
+
+gnina:
+  executable: gnina       # wrapper in ~/.local/bin (see README)
+  use_gpu: false          # Quadro P1000 (sm_61) fails in GNINA 1.3.3 CUDA build; CPU works
+  cpu: 4
+  seed: 42
+  timeout_s: 1800
+  minimize: false         # true (or --minimize): GNINA local minimisation of each DiffDock pose (rigid
+                          # receptor) before PoseBusters/scoring; needed when raw poses clash (e.g. 1ME4)
+  extra_args: []          # e.g. ["--cnn", "fast"]; scoring always uses --score_only
+
+selection:
+  require_posebusters_pass: true   # select highest CNNscore among PoseBusters-valid poses
+  max_site_distance_A: 12.0        # prefer in-site poses within this centroid distance of reference ligand
+  rank_disagreement_fraction: 0.34 # flag when |CNN rank - Vina rank| >= ceil(n * f)
+  metal_contact_A: 3.0
+
+visualization:
+  port: 9877              # Agentic PyMOL default; must match PYMOL_MCP_PORT
+  launch_pymol: true      # start PyMOL + listener if none is running
+  launch_timeout_s: 90
+  color_by: rank          # rank (green=best -> magenta) | identity
+  contact_cutoff: 4.0
+  hbond_cutoff: 3.6
+  hbond_angle: 63.0
+  top_n_images: 3
+  image_width: 1200
+  image_height: 900
+
+interactions:             # 2D interaction diagrams after ranking (ProLIF)
+  enabled: true
+  top_n: 50               # top-ranked ligands to analyse (0 or 50 covers full series)
+  ph: 7.4                 # PDB2PQR/PROPKA protonation of the receptor (analysis only)
+  types: [Hydrophobic, HBDonor, HBAcceptor, Cationic, Anionic, PiStacking, CationPi, PiCation, XBDonor, XBAcceptor]

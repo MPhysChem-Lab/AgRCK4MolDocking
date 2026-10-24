@@ -1,0 +1,8 @@
+Copyright (c) 2026 fatioleg. All rights reserved.
+
+This software and its documentation are proprietary and are provided for private use by the copyright
+holder and explicitly authorised collaborators. No permission is granted to copy, modify, distribute or
+sublicense it without written consent of the copyright holder.
+
+Third-party components keep their own licenses (RDKit BSD-3; GNINA Apache-2.0/GPL-2.0; ProLIF Apache-2.0;
+PoseBusters BSD-3; PDB2PQR/PROPKA BSD-3; open-source PyMOL; Agentic PyMOL MIT; DiffDock via NVIDIA NIM terms).

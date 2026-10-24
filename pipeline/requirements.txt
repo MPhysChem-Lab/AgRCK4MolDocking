@@ -1,0 +1,18 @@
+# Python 3.12 (Linux x86_64). Versions tested on 2026-10-21.
+rdkit==2026.9.1
+# numpy<2 is REQUIRED: the pymol-open-source-whl C extension is built against
+# NumPy 1.x (cmd.get_coords fails with numpy 2) although its metadata says >=2.2.
+numpy==1.26.4
+requests==2.34.2
+PyYAML==6.0.3
+python-dotenv==1.2.4
+posebusters==0.6.5          # pose geometry/clash checks (pulls pandas)
+prolif==2.2.3               # 2D interaction diagrams (pulls MDAnalysis)
+matplotlib==3.11.2           # Discovery-Studio-style 2D diagrams (interactions_ds.py)
+pdb2pqr==3.7.1              # receptor protonation with PROPKA (interaction analysis only)
+pymol-open-source-whl==3.2.0.2
+PyQt5==5.15.11              # PyMOL GUI
+# Agentic PyMOL declares mcp>=1.0 but uses the v1 API (FastMCP); mcp 2.x breaks it.
+mcp[cli]==1.28.1
+-e ./tools/agentic-pymol     # git clone https://github.com/Arcadia-Science/agentic-pymol tools/agentic-pymol
+pytest==9.1.1

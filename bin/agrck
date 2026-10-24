@@ -1,0 +1,9 @@
+#!/bin/sh
+# agrck launcher (Claude Code adds the plugin's bin/ to PATH). Python: $AGRCK_PYTHON > repo .venv > python3.
+D="$(cd "$(dirname "$0")/.." && pwd)"
+PY="${AGRCK_PYTHON:-}"
+if [ -z "$PY" ]; then
+  for c in "$D/.venv/bin/python" "$D/.venv/Scripts/python.exe"; do [ -x "$c" ] && PY="$c" && break; done
+fi
+[ -z "$PY" ] && PY=python3
+PATH="$HOME/.local/bin:$PATH" exec "$PY" "$D/pipeline/agrck.py" "$@"

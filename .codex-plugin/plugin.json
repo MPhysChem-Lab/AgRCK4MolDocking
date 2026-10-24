@@ -1,0 +1,13 @@
+{
+  "name": "agrck4moldocking",
+  "version": "1.0.0",
+  "description": "Agente de docking molecular (DiffDock + GNINA + PoseBusters + ProLIF) com portões automáticos e travas científicas",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "AgRCK4MolDocking",
+    "shortDescription": "Docking molecular guiado, auditado e didático",
+    "developerName": "fatioleg",
+    "category": "Productivity",
+    "defaultPrompt": "Quero iniciar um novo estudo de docking"
+  }
+}

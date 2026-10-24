@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "pymol": {
+      "command": "${AGRCK_PYMOL_MCP:-agentic-pymol}",
+      "args": []
+    }
+  }
+}

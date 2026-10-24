@@ -1,0 +1,12 @@
+{
+  "name": "agrck",
+  "owner": { "name": "fatioleg" },
+  "description": "Marketplace privado do AgRCK4MolDocking",
+  "plugins": [
+    {
+      "name": "agrck4moldocking",
+      "source": "./",
+      "description": "Agente de docking molecular com portões automáticos e travas científicas"
+    }
+  ]
+}
