@@ -26,6 +26,10 @@ Toda etapa (E0 questionário, E1 estruturas, E2 docking, E3 ranking, E4 interaç
 - Sob demanda: `skills/agrck-<etapa>/SKILL.md`.
 - Referência, lida só se necessário: `docs/PROTOCOLO.md`.
 
+## Visualização
+`agrck board ID --open` gera `.specboard/painel.html` a partir do estado do estudo, com o renderizador do specboard
+em `vendor/`. É uma visão somente leitura, refeita a cada mudança de portão e sem nenhuma trava associada.
+
 ## 4. Memória
 | Arquivo | Escopo | Regra |
 |---|---|---|

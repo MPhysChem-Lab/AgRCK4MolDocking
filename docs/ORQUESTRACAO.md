@@ -29,3 +29,6 @@ para o modelo barato. Escrever e revisar ficam com agentes diferentes.
 - **Codex:** `-c model_reasoning_effort=<low|medium|high>` na linha de comando ou em `~/.codex/config.toml`.
   Para um papel, use uma sessão `codex exec` separada com o prompt do arquivo do agente
   (`agents/agrck-revisor.md`) e o esforço correspondente.
+  - O revisor do Codex roda com `AGRCK_ROLE=revisor`, por exemplo
+    `AGRCK_ROLE=revisor codex exec -c model_reasoning_effort="high" ...`. Só assim o guard deixa gravar
+    `relatorio/REVISAO.md`. No Claude Code, o guard reconhece o subagente `agrck-revisor` pelo `agent_type`.

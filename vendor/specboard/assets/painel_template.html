@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mapa do Projeto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Gerado por specboard a partir de .specboard/estado.json — não edite o HTML gerado.
+   Layout: "você está aqui" + progresso → mapa clicável (colunas = fases, setas = dependências) + painel de detalhe
+   → fila do que aguarda você → feito (linha do tempo) × falta (lista ordenada) → como ler. */
+:root{
+  --bg:#f3f6f6; --surface:#ffffff; --fg:#17262a; --muted:#56696e; --line:#d3dfe1; --edge:#9fb3b7;
+  --accent:#0f6b73; --imid:#d9730d;
+  --ok:#23804a; --ok-bg:#e3f3e8; --rev:#3d6fb8; --rev-bg:#e4ecf8; --exe:#a15c00; --exe-bg:#fdf0dc;
+  --next:#1f5fbf; --next-bg:#e4edfb; --wait:#6b7a7e; --wait-bg:#eceff0; --block:#b3261e; --block-bg:#fbe5e3;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1719; --surface:#172225; --fg:#e3ecee; --muted:#9db0b4; --line:#2b3b3f; --edge:#4a6166; --accent:#4fb3bb; --imid:#f09a45;
+  --ok:#6fcf8f; --ok-bg:#15301f; --rev:#8fb2ea; --rev-bg:#18253b; --exe:#f0b25a; --exe-bg:#33260f; --next:#8db4f2; --next-bg:#16233a;
+  --wait:#a3b1b4; --wait-bg:#212c2f; --block:#f08a82; --block-bg:#3a1714; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1719; --surface:#172225; --fg:#e3ecee; --muted:#9db0b4; --line:#2b3b3f; --edge:#4a6166; --accent:#4fb3bb; --imid:#f09a45;
+  --ok:#6fcf8f; --ok-bg:#15301f; --rev:#8fb2ea; --rev-bg:#18253b; --exe:#f0b25a; --exe-bg:#33260f; --next:#8db4f2; --next-bg:#16233a;
+  --wait:#a3b1b4; --wait-bg:#212c2f; --block:#f08a82; --block-bg:#3a1714; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:16px/1.55 var(--f-body);margin:0}
+.wrap{max-width:1240px;margin:0 auto;grid-template-columns:minmax(0,1fr);padding-inline:clamp(16px,3.5vw,36px);padding-block:28px 56px;display:grid;gap:34px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(1.7rem,3.6vw,2.4rem)} h2{font-size:1.35rem} h3{font-size:1.1rem}
+.eyebrow{font:500 .72rem var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.eyebrow a{color:inherit}
+.muted{color:var(--muted)} code{font-family:var(--f-mono);font-size:.86em}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--next);outline-offset:2px}
+.q{border-left:4px solid var(--imid);padding:4px 0 4px 12px;font-size:.98rem;margin:0}
+.q b{color:var(--imid)}
+.err{background:var(--block-bg);border:1px solid var(--block);border-radius:12px;padding:12px 16px}
+.err ul{margin:6px 0 0;padding-left:20px}
+
+/* faixa superior */
+.top{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:18px;align-items:stretch}
+.here{background:var(--next-bg);border:2px solid var(--next);border-radius:14px;padding:18px 20px;display:grid;gap:8px;align-content:start}
+.here .lab{font:600 .78rem var(--f-body);letter-spacing:.06em;text-transform:uppercase;color:var(--next)}
+.here .big{font:700 1.45rem var(--f-display)}
+.here p{margin:0}
+.here .gate{background:var(--exe-bg);color:var(--fg);border-left:4px solid var(--exe);border-radius:8px;padding:8px 12px;font-size:.93rem}
+.prog{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:grid;gap:12px;align-content:start}
+.bar{height:14px;border-radius:999px;background:var(--wait-bg);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.b-ok{background:var(--ok)} .b-rev{background:var(--rev)} .b-exe{background:var(--exe)} .b-run{background:var(--next)} .b-block{background:var(--block)}
+.kpis{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.93rem}
+.kpis b{font-variant-numeric:tabular-nums;font-size:1.15rem}
+.kpis .dot{margin-right:4px}
+
+/* filtros */
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:4px 12px;font-size:.85rem;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chip[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);font-weight:600}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:currentColor;flex:none}
+.c-verificado{color:var(--ok)} .c-aguarda{color:var(--exe)} .c-em_curso{color:var(--next)} .c-pendente{color:var(--wait)} .c-bloqueado{color:var(--block)}
+
+/* mapa */
+/* mapa ocupa a largura toda (cabe 5–6 fases sem rolar); o detalhe vem logo abaixo, em duas colunas */
+.mapbox{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;align-items:start}
+.map{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;overflow-x:auto}
+.cols{position:relative;display:grid;gap:26px;z-index:1}
+.col{display:grid;gap:14px;align-content:start}
+.colh{font:500 .7rem var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);min-height:2.4em}
+svg.edges{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+svg.edges path{fill:none;stroke:var(--edge);stroke-width:1.6}
+svg.edges path.hot{stroke:var(--accent);stroke-width:2.6}
+.node{position:relative;text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:10px 12px 10px 14px;cursor:pointer;display:grid;gap:4px;transition:transform .12s, box-shadow .12s, opacity .2s}
+.node::before{content:"";position:absolute;left:0;top:10px;bottom:10px;width:4px;border-radius:0 3px 3px 0;background:var(--st)}
+.node:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgb(0 0 0 / .08)}
+.node[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
+.node.final{border-style:double;border-width:3px}
+.node.dim{opacity:.28}
+.node .nc{font:500 .78rem var(--f-mono);color:var(--accent)}
+.node .nt{font-weight:600;line-height:1.25}
+.node .mini{height:6px;border-radius:999px;background:var(--wait-bg);overflow:hidden;display:flex}
+.node .mini i{display:block;height:100%}
+.node .ns{font-size:.78rem;color:var(--st);font-weight:600}
+.st-verificado{--st:var(--ok)} .st-aguarda{--st:var(--exe)} .st-em_curso{--st:var(--next)} .st-pendente{--st:var(--wait)} .st-bloqueado{--st:var(--block)}
+.node .you{position:absolute;top:-11px;right:10px;background:var(--next);color:#fff;font:600 .68rem var(--f-body);letter-spacing:.04em;padding:2px 8px;border-radius:999px}
+.hint{font-size:.85rem;margin:10px 0 0}
+
+/* painel */
+/* aba lateral: abre ao clicar num módulo; em tela larga o conteúdo encolhe para o mapa continuar visível */
+:root{--drawer:min(460px,100vw)}
+.panel{position:fixed;top:0;right:0;bottom:0;width:var(--drawer);z-index:30;background:var(--surface);border-left:3px solid var(--accent);
+  box-shadow:-10px 0 30px rgb(0 0 0 / .12);padding:16px 20px 28px;overflow-y:auto;overscroll-behavior:contain;display:grid;gap:12px;align-content:start;
+  transform:translateX(105%);transition:transform .22s ease;visibility:hidden}
+.panel.open{transform:none;visibility:visible}
+.panel .pa,.panel .pb{display:grid;gap:12px;min-width:0}
+.panel .x{position:sticky;top:0;justify-self:end;margin:-6px -8px 0 0;border:1px solid var(--line);background:var(--surface);border-radius:999px;width:34px;height:34px;cursor:pointer;font-size:1.1rem;line-height:1;z-index:1}
+@media (min-width:1100px){body.drawer-open{padding-right:var(--drawer)} body.drawer-open .cols{gap:16px}}
+body{transition:padding-right .22s ease}
+.pill{display:inline-flex;align-items:center;gap:6px;font:600 .72rem var(--f-body);letter-spacing:.03em;padding:2px 10px;border-radius:999px;white-space:nowrap;width:max-content;max-width:100%}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.p-verificado{color:var(--ok);background:var(--ok-bg)} .p-revisado{color:var(--rev);background:var(--rev-bg)}
+.p-executado,.p-aguarda{color:var(--exe);background:var(--exe-bg)} .p-em_curso{color:var(--next);background:var(--next-bg)}
+.p-pendente{color:var(--wait);background:var(--wait-bg)} .p-bloqueado{color:var(--block);background:var(--block-bg)}
+.imp{font:600 .68rem var(--f-body);padding:1px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.imp.alto{border-color:var(--block);color:var(--block)}
+.panel p{margin:0} .kv{font-size:.9rem;display:grid;gap:4px}
+.kv b{font-weight:600}
+.box{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.9rem;display:grid;gap:6px}
+.box ul{margin:0;padding-left:18px}
+.amend{background:var(--exe-bg);border-left:4px solid var(--exe);border-radius:8px;padding:8px 10px;font-size:.88rem}
+.steps{list-style:none;margin:0;padding:0;display:grid}
+.steps li{border-top:1px dashed var(--line)}
+.steps details>summary{list-style:none;display:grid;grid-template-columns:16px 4.6rem minmax(0,1fr);gap:6px;align-items:start;padding:7px 0;cursor:pointer;font-size:.92rem}
+.steps details>summary::-webkit-details-marker{display:none}
+.steps .ic{width:12px;height:12px;border-radius:50%;margin-top:5px;border:2px solid var(--wait)}
+.s-verificado .ic{background:var(--ok);border-color:var(--ok)}
+.s-revisado .ic{background:var(--rev);border-color:var(--rev)}
+.s-executado .ic{background:var(--exe);border-color:var(--exe)}
+.s-em_curso .ic{background:var(--next);border-color:var(--next)}
+.s-bloqueado .ic{background:var(--block);border-color:var(--block)}
+.s-here .ic{box-shadow:0 0 0 3px var(--next-bg);border-color:var(--next)}
+.s-here summary{font-weight:600}
+.steps .n{font:500 .78rem var(--f-mono);color:var(--muted);padding-top:2px}
+.steps .d{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.78rem;color:var(--muted);margin-top:2px}
+.steps .body{padding:2px 0 10px 22px;font-size:.88rem;display:grid;gap:5px}
+.steps .body b{font-weight:600}
+.cmd{font:500 .78rem var(--f-mono);background:var(--wait-bg);border-radius:6px;padding:4px 8px;overflow-x:auto;white-space:nowrap}
+
+/* listas inferiores */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:grid;gap:12px;align-content:start;min-width:0}
+.queue{list-style:none;margin:0;padding:0;display:grid}
+.queue li{display:grid;grid-template-columns:5.2rem minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px dashed var(--line);font-size:.93rem}
+.tl{list-style:none;margin:0;padding:0 0 0 14px;border-left:2px solid var(--line);display:grid;gap:12px}
+.tl li{position:relative;font-size:.93rem}
+.tl li::before{content:"";position:absolute;left:-21px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--tc,var(--exe));border:2px solid var(--surface)}
+.tl .dt{font:500 .78rem var(--f-mono);color:var(--muted);display:block}
+.todo{list-style:none;counter-reset:t;margin:0;padding:0;display:grid;gap:8px}
+.todo li{counter-increment:t;display:grid;grid-template-columns:2rem minmax(0,1fr) auto;gap:8px;align-items:start;font-size:.93rem;padding:8px 0;border-top:1px dashed var(--line)}
+.todo li::before{content:counter(t);font:600 .85rem var(--f-mono);color:var(--muted);padding-top:1px}
+.todo li.first{font-weight:600} .todo li.first::before{color:var(--next)}
+.who{font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.who-voce{color:var(--imid);background:color-mix(in srgb,var(--imid) 14%,transparent)}
+.who-agente{color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.who-plan{color:var(--muted);background:var(--wait-bg)}
+.lk{background:none;border:0;padding:0;color:var(--accent);text-decoration:underline;cursor:pointer;font:inherit;text-align:left}
+.gloss{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;font-size:.9rem}
+.gloss div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.gloss b{font-family:var(--f-mono);font-weight:500;color:var(--accent)}
+footer{color:var(--muted);font-size:.85rem}
+
+@media (max-width:760px){
+  .top,.two{grid-template-columns:minmax(0,1fr)}
+  .cols{grid-template-columns:minmax(0,1fr) !important;min-width:0 !important;gap:16px} .colh{min-height:0} svg.edges{display:none}
+  .todo li{grid-template-columns:1.6rem minmax(0,1fr)} .todo .who{grid-column:2;width:max-content}
+  .queue li{grid-template-columns:4.6rem minmax(0,1fr)} .queue .imp{grid-column:2;width:max-content}
+}
+@media (prefers-reduced-motion:reduce){.node,.panel,body{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const D = /*__DADOS__*/null;
+(function(){
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const E = D.estado, P = E.projeto || {}, R = D.resumo || {}, mods = E.modulos || [];
+  const byId = Object.fromEntries(mods.map(m => [m.id, m]));
+  const SB = P.comando_humano || 'python specboard.py';
+  // rótulos de etapa (nível vindo do agente ou do humano)
+  const RE = {verificado:'verificado por você', revisado:'revisado por você', executado:'executado · aguarda você',
+              em_curso:'em curso', bloqueado:'bloqueado', pendente:'por fazer'};
+  // rótulos de módulo
+  const RM = {verificado:'verificado', aguarda:'feito · aguarda você', em_curso:'em curso', pendente:'não começou', bloqueado:'bloqueado'};
+  const FEITO = s => s === 'executado' || s === 'revisado' || s === 'verificado';
+
+  function stMod(m){
+    const ss = (m.etapas||[]).map(e => e._status);
+    if (m.bloqueio || ss.includes('bloqueado')) return 'bloqueado';
+    if (ss.length && ss.every(s => s === 'verificado')) return 'verificado';
+    if (ss.length && ss.every(FEITO)) return 'aguarda';
+    if (ss.some(s => s !== 'pendente')) return 'em_curso';
+    return 'pendente';
+  }
+  // ordem topológica, priorizando o caminho até o(s) resultado(s) final(is)
+  const ordem = (() => { const vis = new Set(), out = [];
+    const go = id => { if (vis.has(id) || !byId[id]) return; vis.add(id); (byId[id].depende_de||[]).forEach(go); out.push(byId[id]); };
+    mods.filter(m => m.resultado_final).forEach(m => go(m.id)); mods.forEach(m => go(m.id)); return out; })();
+  const naRota = new Set(); (function(){ const go = id => { if (naRota.has(id) || !byId[id]) return; naRota.add(id); (byId[id].depende_de||[]).forEach(go); };
+    mods.filter(m => m.resultado_final).forEach(m => go(m.id)); })();
+
+  // "você está aqui": override explícito, senão etapa em curso, senão próxima por fazer num módulo aberto
+  const todas = ordem.flatMap(m => (m.etapas||[]).map(e => ({m, e})));
+  const aberto = m => (m.etapas||[]).some(e => e._status !== 'pendente');
+  const here = todas.find(x => x.e.id === P.voce_esta_aqui)
+    || todas.find(x => x.e._status === 'em_curso')
+    || todas.find(x => x.e._status === 'pendente' && aberto(x.m) && naRota.has(x.m.id))
+    || todas.find(x => x.e._status === 'pendente' && aberto(x.m))
+    || todas.find(x => x.e._status === 'pendente');
+  const fila = D.fila || [];
+  const LIM = P.limite_fila ?? 5;
+
+  let h = '';
+  // cabeçalho
+  h += `<header style="display:grid;gap:8px">
+    <div class="eyebrow">${esc(P.nome)}${P.subtitulo?' · '+esc(P.subtitulo):''} · gerado em ${esc(D.gerado_em)} ·
+      <a href="#live" id="lv">${location.hash==='#live'?'ao vivo (recarrega a cada 10 s)':'ativar ao vivo'}</a></div>
+    <h1>${esc(P.titulo || 'Mapa do projeto')}</h1>
+    <p class="q"><b>Pergunta central:</b> ${esc(P.pergunta_central)}</p></header>`;
+  if ((D.erros||[]).length || (D.avisos||[]).length)
+    h += `<div class="err"><b>${D.erros.length} erro(s) e ${D.avisos.length} aviso(s) no estado do projeto</b><ul>
+      ${D.erros.map(x=>`<li>⛔ ${esc(x)}</li>`).join('')}${D.avisos.map(x=>`<li>⚠ ${esc(x)}</li>`).join('')}</ul></div>`;
+
+  // você está aqui + progresso
+  const c = R.contagem || {}, tot = R.total || 0, w = n => tot ? 100*(n||0)/tot : 0;
+  const nEst = Math.max(0, tot - mods.reduce((a,m)=>a+(m.etapas||[]).length,0));
+  h += `<section class="top" aria-label="Situação atual"><div class="here"><span class="lab">Você está aqui</span>`;
+  if (here) {
+    h += `<span class="big">${esc(here.e.id)} · ${esc(here.e.titulo)}</span>
+      <p>${esc(here.e.descricao || here.m.objetivo || '')}</p>
+      <p style="font-size:.95rem">Módulo <button class="lk" type="button" data-sel="${esc(here.m.id)}">${esc(here.m.id)} · ${esc(here.m.titulo)}</button>
+      ${here.e.quem?` · próxima ação: ${esc(here.e.quem)}`:''}</p>`;
+  } else h += `<span class="big">Nenhuma etapa por fazer</span>`;
+  if (fila.length) h += `<p class="gate"><b>${fila.length} etapa(s) aguardam a sua verificação.</b> ${fila.length > LIM
+      ? `Acima de ${LIM}, o agente não abre etapas novas de impacto alto: produzir mais do que você consegue conferir só acumula.`
+      : 'Elas estão listadas abaixo, em ordem de impacto.'}</p>`;
+  h += `</div><div class="prog">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><h2 style="font-size:1.1rem">Progresso verificado</h2>
+      <b style="font-size:1.15rem">${tot?Math.round(100*(R.verificadas||0)/tot):0} %</b></div>
+      <div class="bar" aria-hidden="true"><i class="b-ok" style="width:${w(c.verificado)}%"></i><i class="b-rev" style="width:${w(c.revisado)}%"></i>
+        <i class="b-exe" style="width:${w(c.executado)}%"></i><i class="b-run" style="width:${w(c.em_curso)}%"></i><i class="b-block" style="width:${w(c.bloqueado)}%"></i></div>
+      <div class="kpis">
+        <span><span class="dot c-verificado"></span><b>${c.verificado||0}</b> verificadas por você</span>
+        <span><span class="dot c-aguarda"></span><b>${(c.executado||0)+(c.revisado||0)}</b> feitas pelo agente, aguardando você</span>
+        <span><span class="dot c-pendente"></span><b>${(c.pendente||0)+(c.em_curso||0)+nEst}</b> por fazer</span>
+        ${c.bloqueado?`<span><span class="dot c-bloqueado"></span><b>${c.bloqueado}</b> bloqueadas</span>`:''}</div>
+      <p class="muted" style="margin:0;font-size:.88rem">Total de ${tot} etapas${nEst?`, das quais ${nEst} são estimativas de módulos ainda sem contrato`:''}.
+        Só conta como progresso o que <b>você</b> verificou; executado pelo agente ainda não é progresso.</p></div></section>`;
+
+  // mapa
+  h += `<section style="display:grid;gap:12px" aria-label="Mapa dos módulos">
+    <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:end">
+      <h2>Mapa: clique num módulo para ver o detalhe</h2><div class="filters" role="group" aria-label="Filtrar por status" id="filters"></div></div>
+    <div class="mapbox"><div class="map" id="map"><svg class="edges" id="edges" aria-hidden="true"></svg><div class="cols" id="cols"></div></div>
+      <aside class="panel" id="panel" aria-live="polite"></aside></div>
+    <p class="hint muted">Seta A → B: B usa o resultado de A. Borda dupla: módulo que responde a pergunta central. Linhas em destaque: dependências do módulo selecionado. 🔒 contrato travado · ✎ emendas.</p></section>`;
+
+  // fila
+  h += `<section class="card"><h2>Aguardando a sua verificação <span class="muted" style="font-size:1rem">(${fila.length}, por impacto na resposta)</span></h2>`;
+  h += fila.length ? `<ol class="queue">${fila.map(f => `<li><button class="lk" type="button" data-step="${esc(f.id)}"><code>${esc(f.id)}</code></button>
+      <span>${esc(f.titulo)}${f.exp?' · <b style="color:var(--block)">verificação expirada: a etapa mudou depois</b>':''}
+        <span class="muted" style="font-size:.82rem"> · ${esc(RE[f.status]||f.status)}${f.revisao==='amostragem'?' · revisão por amostragem':''}</span></span>
+      <span class="imp ${esc(f.impacto)}">impacto ${esc(f.impacto)}</span></li>`).join('')}</ol>
+      <p class="muted" style="margin:0;font-size:.88rem">No seu terminal: <code>${esc(SB)} verify &lt;ETAPA&gt;</code> (ou <code>review</code>, se só leu o resumo).</p>`
+    : `<p class="muted" style="margin:0">Nada aguardando você.</p>`;
+  h += `</section>`;
+
+  // feito / falta
+  h += `<section class="two"><div class="card"><h2>O que já foi feito</h2><ol class="tl" id="done"></ol></div>
+    <div class="card"><h2>O que falta, em ordem</h2><ol class="todo" id="todo"></ol></div></section>`;
+
+  // como ler
+  const gl = (P.glossario||[]).map(([t,d]) => `<div><b>${esc(t)}</b> ${esc(d)}</div>`).join('');
+  h += `<section style="display:grid;gap:10px"><h2>Como ler este painel</h2><div class="gloss">
+    <div><b>executado</b> o agente terminou e diz o que estabeleceu; ainda não vale como progresso.</div>
+    <div><b>revisado</b> você leu a afirmação e o resumo.</div>
+    <div><b>verificado</b> você conferiu a evidência. Se a etapa mudar depois, a verificação expira.</div>
+    <div><b>impacto alto</b> se esta etapa estiver errada, a resposta à pergunta central muda.</div>
+    <div><b>🔒 contrato</b> critérios de aceitação e abandono travados antes de ver resultados; mudar exige emenda visível.</div>
+    ${gl}</div></section>`;
+  h += `<footer>${P.fontes?'Fonte: '+esc(P.fontes)+' · ':''}gerado por specboard a partir de <code>.specboard/estado.json</code> em ${esc(D.gerado_em)}.</footer>`;
+  document.getElementById('app').innerHTML = h;
+
+  // colunas e nós
+  const fases = (E.fases && E.fases.length) ? E.fases : [...new Set(mods.map(m => m.fase || '—'))];
+  const cols = document.getElementById('cols');
+  cols.style.gridTemplateColumns = `repeat(${fases.length}, minmax(136px, 1fr))`;
+  cols.style.minWidth = (fases.length * 152) + 'px';
+  fases.forEach(f => {
+    const col = document.createElement('div'); col.className = 'col';
+    col.innerHTML = `<div class="colh">${esc(f)}</div>`;
+    mods.filter(m => (m.fase || '—') === f).forEach(m => {
+      const s = stMod(m), et = m.etapas || [], n = et.length;
+      const cnt = k => et.filter(e => e._status === k).length;
+      const ct = m.contrato || {};
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = `node st-${s}${m.resultado_final?' final':''}`; b.id = 'n-'+m.id; b.dataset.st = s;
+      b.setAttribute('aria-pressed','false');
+      const ns = n ? `${cnt('verificado')}/${n} verificadas${(cnt('executado')+cnt('revisado'))?` · ${cnt('executado')+cnt('revisado')} aguardam você`:''}`
+                   : (m.bloqueio ? 'bloqueado' : (m.etapas_estimadas ? `~${m.etapas_estimadas} etapas (estimativa)` : RM[s]));
+      b.innerHTML = (here && here.m.id === m.id ? '<span class="you">você está aqui</span>' : '') +
+        `<span class="nc">${esc(m.id)}${ct.hash?' · 🔒':''}${(m.emendas||[]).length?' · ✎'+m.emendas.length:''}</span><span class="nt">${esc(m.titulo)}</span>` +
+        (n ? `<span class="mini" aria-hidden="true"><i class="b-ok" style="width:${100*cnt('verificado')/n}%"></i><i class="b-rev" style="width:${100*cnt('revisado')/n}%"></i><i class="b-exe" style="width:${100*cnt('executado')/n}%"></i><i class="b-run" style="width:${100*cnt('em_curso')/n}%"></i></span>` : '') +
+        `<span class="ns">${esc(ns)}</span>`;
+      b.addEventListener('click', () => select(m.id));
+      col.appendChild(b);
+    });
+    cols.appendChild(col);
+  });
+
+  // setas
+  const svg = document.getElementById('edges'), map = document.getElementById('map');
+  const EDGES = []; mods.forEach(m => (m.depende_de||[]).forEach(d => byId[d] && EDGES.push([d, m.id])));
+  let cur = null;
+  function draw(){
+    const r0 = map.getBoundingClientRect();
+    svg.setAttribute('width', map.scrollWidth); svg.setAttribute('height', map.scrollHeight);
+    let s = `<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--edge);stroke:none"/></marker>`+
+            `<marker id="ahh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--accent);stroke:none"/></marker></defs>`;
+    EDGES.forEach(([a, b]) => {
+      const A = document.getElementById('n-'+a).getBoundingClientRect(), B = document.getElementById('n-'+b).getBoundingClientRect();
+      const hot = cur && (a === cur || b === cur);
+      let x1, y1, x2, y2, d;
+      if (B.left >= A.right - 4) {            // colunas diferentes: da direita de A para a esquerda de B
+        x1 = A.right - r0.left + map.scrollLeft; y1 = A.top + A.height/2 - r0.top + map.scrollTop;
+        x2 = B.left - r0.left + map.scrollLeft - 2; y2 = B.top + B.height/2 - r0.top + map.scrollTop;
+        const mx = (x1 + x2)/2; d = `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
+      } else {                                // mesma coluna: arco pela direita
+        x1 = A.right - r0.left + map.scrollLeft; y1 = A.top + A.height/2 - r0.top + map.scrollTop;
+        x2 = B.right - r0.left + map.scrollLeft + 2; y2 = B.top + B.height/2 - r0.top + map.scrollTop;
+        const bx = Math.max(x1, x2) + 18; d = `M${x1},${y1} C${bx},${y1} ${bx},${y2} ${x2},${y2}`;
+      }
+      s += `<path class="${hot?'hot':''}" marker-end="url(#${hot?'ahh':'ah'})" d="${d}"/>`;
+    });
+    svg.innerHTML = s;
+  }
+
+  // painel de detalhe
+  const panel = document.getElementById('panel');
+  const largo = () => matchMedia('(min-width:1100px)').matches;
+  const redraw = () => { draw(); setTimeout(draw, 260); };
+  function openDrawer(){ panel.classList.add('open'); document.body.classList.add('drawer-open'); redraw(); }
+  function closeDrawer(){ panel.classList.remove('open'); document.body.classList.remove('drawer-open'); cur = null;
+    document.querySelectorAll('.node').forEach(n => n.setAttribute('aria-pressed','false')); redraw(); }
+  document.addEventListener('keydown', ev => { if (ev.key === 'Escape' && panel.classList.contains('open')) closeDrawer(); });
+  function stepHTML(m, e){
+    const isHere = here && here.e.id === e.id;
+    const regs = (e._regs||[]).map(r => `<div class="muted">↳ ${esc(r.nivel)} por ${esc(r.revisor)} em ${esc(r.data)}${r.nota?': '+esc(r.nota):''}</div>`).join('');
+    const body = [
+      e.descricao && !e.afirmacao ? `<div>${esc(e.descricao)}</div>` : '',
+      e.afirmacao ? `<div><b>Afirma:</b> ${esc(e.afirmacao)}</div>` : '',
+      e.verificacao ? `<div><b>Como você confere:</b> ${esc(e.verificacao)}</div>` : '',
+      (e.evidencia||[]).length ? `<div><b>Evidência:</b> ${e.evidencia.map(esc).join(', ')}</div>` : '',
+      e.bloqueio ? `<div style="color:var(--block)"><b>Bloqueio:</b> ${esc(e.bloqueio)}</div>` : '',
+      e._exp ? `<div style="color:var(--block)"><b>Verificação expirada:</b> a etapa mudou depois que você a conferiu.</div>` : '',
+      regs,
+      (e._status === 'executado' || e._status === 'revisado') ? `<div class="cmd">${esc(SB)} verify ${esc(e.id)}</div>` : ''
+    ].join('');
+    return `<li class="s-${esc(e._status)}${isHere?' s-here':''}" id="st-${esc(e.id)}"><details${isHere?' open':''}><summary>
+      <span class="ic" aria-hidden="true"></span><span class="n">${esc(e.id)}</span>
+      <span>${esc(e.titulo)}<span class="d">${isHere?'<b style="color:var(--next)">você está aqui</b> · ':''}${esc(RE[e._status]||e._status)}${e.data?' · '+esc(e.data):''}
+        <span class="imp ${esc(e.impacto)}">${esc(e.impacto)}</span></span></span></summary>
+      ${body?`<div class="body">${body}</div>`:''}</details></li>`;
+  }
+  function select(id, step){
+    cur = id; const m = byId[id]; if (!m) return;
+    document.querySelectorAll('.node').forEach(n => n.setAttribute('aria-pressed', n.id === 'n-'+id ? 'true' : 'false'));
+    const s = stMod(m), ct = m.contrato || {};
+    const deps = (m.depende_de||[]).join(', ') || 'nenhuma (é a base)';
+    const libera = mods.filter(x => (x.depende_de||[]).includes(id)).map(x => x.id).join(', ') || 'nenhum (fim da cadeia)';
+    let p = `<button class="x" type="button" aria-label="Fechar detalhe" title="Fechar (Esc)">×</button><div class="pa"><div class="eyebrow">${esc(m.id)}${m.resultado_final?' · responde a pergunta central':''}</div><h3>${esc(m.titulo)}</h3>
+      <span class="pill p-${s}">${esc(RM[s])}${m.quando?' · '+esc(m.quando):''}</span>
+      <p>${esc(m.objetivo)}</p>
+      ${m.bloqueio?`<p style="color:var(--block)"><b>Bloqueio:</b> ${esc(m.bloqueio)}</p>`:''}
+      <div class="kv">${m.responde?`<div><b>Responde:</b> ${esc(m.responde)}</div>`:''}<div><b>Depende de:</b> ${esc(deps)}</div><div><b>Libera:</b> ${esc(libera)}</div>
+      ${m.registro?`<div><b>Registro:</b> ${esc(m.registro)}</div>`:''}</div>`;
+    if (!m._contrato_ok) p += `<div class="amend" style="border-color:var(--block)">⛔ O contrato travado foi alterado sem emenda.</div>`;
+    if (ct.pergunta || (ct.criterios_aceitacao||[]).length || ct.criterio_abandono) {
+      p += `<details class="box"><summary><b>Contrato</b> ${ct.hash?`🔒 travado em ${esc(ct.travado_em)}`:'<span class="muted">(ainda não travado)</span>'}</summary>
+        ${ct.pergunta?`<div><b>Pergunta:</b> ${esc(ct.pergunta)}</div>`:''}
+        ${(ct.criterios_aceitacao||[]).length?`<div><b>Aceita se:</b><ul>${ct.criterios_aceitacao.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''}
+        <div><b>Abandona ou revê o plano se:</b> ${ct.criterio_abandono?esc(ct.criterio_abandono):'<span style="color:var(--block)">não definido</span>'}</div></details>`;
+    }
+    (m.emendas||[]).forEach(a => p += `<div class="amend">✎ <b>Emenda de ${esc(a.data)}:</b> ${esc(a.justificativa)}</div>`);
+    const et = m.etapas || [];
+    p += `</div><div class="pb"><h3 style="font-size:1rem">Etapas${et.length?` <span class="muted" style="font-weight:400">· clique para abrir</span>`:''}</h3>`;
+    p += et.length ? `<ul class="steps">${et.map(e => stepHTML(m, e)).join('')}</ul>`
+      : `<p class="muted" style="font-size:.9rem">As etapas deste módulo são definidas no contrato, quando ele for aberto.${m.etapas_estimadas?` Estimativa: ~${m.etapas_estimadas} etapas.`:''}</p>`;
+    panel.innerHTML = p + '</div>';
+    panel.querySelector('.x').addEventListener('click', closeDrawer);
+    openDrawer();
+    panel.scrollTop = 0;
+    draw();
+    try { localStorage.setItem('specboard.sel.' + (P.nome||''), id); } catch(e) {}
+    if (step) { const li = document.getElementById('st-'+step); if (li) { li.querySelector('details').open = true; li.scrollIntoView({behavior:'smooth', block:'nearest'}); } }
+  }
+
+  // filtros
+  const F = document.getElementById('filters');
+  [['todos','Todos'],['verificado','Verificado'],['aguarda','Aguarda você'],['em_curso','Em curso'],['pendente','Não começou'],['bloqueado','Bloqueado']].forEach(([k, l], i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.setAttribute('aria-pressed', i ? 'false' : 'true');
+    b.innerHTML = (i ? `<span class="dot c-${k}"></span>` : '') + l;
+    b.addEventListener('click', () => {
+      F.querySelectorAll('.chip').forEach(x => x.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true');
+      document.querySelectorAll('.node').forEach(n => n.classList.toggle('dim', k !== 'todos' && n.dataset.st !== k));
+    });
+    F.appendChild(b);
+  });
+
+  // o que já foi feito: etapas feitas agrupadas por data
+  const feitos = todas.filter(x => FEITO(x.e._status));
+  const grupos = {}; feitos.forEach(x => { const k = x.e.data || 'sem data'; (grupos[k] = grupos[k] || []).push(x); });
+  const chaves = Object.keys(grupos).sort((a, b) => a === 'sem data' ? 1 : b === 'sem data' ? -1 : a.localeCompare(b));
+  document.getElementById('done').innerHTML = chaves.length ? chaves.map(k => {
+    const xs = grupos[k], allV = xs.every(x => x.e._status === 'verificado');
+    return `<li style="--tc:${allV?'var(--ok)':'var(--exe)'}"><span class="dt">${esc(k)}</span>${xs.map(x =>
+      `<button class="lk" type="button" data-sel="${esc(x.m.id)}" data-step="${esc(x.e.id)}">${esc(x.e.id)}</button> ${esc(x.e.titulo)}${x.e._status==='verificado'?' ✓':''}`).join('<br>')}</li>`;
+  }).join('') : '<li class="muted">Nada concluído ainda.</li>';
+
+  // o que falta: você está aqui → pendências suas → próximas etapas dos módulos abertos → módulos a planejar
+  const T = [];
+  if (here) T.push([here.m.id, here.e.id, `${here.e.id} · ${here.e.titulo}`, here.e.quem || 'agente', 'agente']);
+  (P.pendencias_humanas||[]).forEach(x => T.push([x.modulo || '', '', `${x.id ? x.id+' · ' : ''}${x.texto}${x.bloqueia?' (trava '+x.bloqueia+')':''}`, 'você', 'voce']));
+  if (fila.length) T.push(['', '', `Verificar as ${fila.length} etapa(s) da fila acima`, 'você', 'voce']);
+  todas.filter(x => x.e._status === 'pendente' && (!here || x.e.id !== here.e.id) && aberto(x.m))
+    .forEach(x => T.push([x.m.id, x.e.id, `${x.e.id} · ${x.e.titulo}`, x.e.quem || 'agente', 'agente']));
+  ordem.filter(m => !aberto(m)).forEach(m => T.push([m.id, '', `${m.id} · ${m.titulo}`, m.bloqueio ? 'bloqueado' : 'a planejar', 'plan']));
+  document.getElementById('todo').innerHTML = T.map(([mid, sid, t, who, cls], i) =>
+    `<li class="${i===0?'first':''}">${mid?`<button class="lk" type="button" data-sel="${esc(mid)}"${sid?` data-step="${esc(sid)}"`:''}>${esc(t)}</button>`:`<span>${esc(t)}</span>`}
+      <span class="who who-${cls}">${esc(who)}</span></li>`).join('');
+
+  // ligações clicáveis
+  document.querySelectorAll('[data-sel],[data-step]').forEach(b => b.addEventListener('click', () => {
+    let mid = b.dataset.sel, sid = b.dataset.step;
+    if (!mid && sid) { const x = todas.find(y => y.e.id === sid); mid = x && x.m.id; }
+    if (!mid) return;
+    select(mid, sid); document.getElementById('n-'+mid).scrollIntoView({behavior:'smooth', block:'nearest', inline:'nearest'});
+  }));
+  document.getElementById('lv').addEventListener('click', ev => { ev.preventDefault(); location.hash = location.hash === '#live' ? '' : 'live'; location.reload(); });
+
+  let start = here ? here.m.id : (ordem[0] || {}).id;
+  try { const s = localStorage.getItem('specboard.sel.' + (P.nome||'')); if (s && byId[s]) start = s; } catch(e) {}
+  if (start && largo()) select(start);
+  window.addEventListener('resize', draw);
+  map.addEventListener('scroll', draw);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+  if (location.hash === '#live') setTimeout(() => location.reload(), 10000);
+})();
+</script>
+</body>
+</html>

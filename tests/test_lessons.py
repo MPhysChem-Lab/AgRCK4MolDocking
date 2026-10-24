@@ -22,10 +22,10 @@ def test_every_lesson_names_existing_tests():
 
 def test_docs_only_mention_existing_agrck_commands():
     src = (REPO / "pipeline/agrck.py").read_text(encoding="utf-8")
-    cmds = set(re.findall(r'add_parser\("(\w+)"', src))
+    cmds = set(re.findall(r'add_parser\("([\w-]+)"', src))
     texts = [REPO / "AGENTS.md", *REPO.glob("skills/*/SKILL.md"), *REPO.glob("agents/*.md"), *REPO.glob("docs/*.md")]
     for p in texts:
-        for c in re.findall(r"`agrck (\w+)", p.read_text(encoding="utf-8")):
+        for c in re.findall(r"`agrck ([\w-]+)", p.read_text(encoding="utf-8")):
             assert c in cmds, f"{p.name}: 'agrck {c}' não existe"
 
 

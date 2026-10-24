@@ -6,6 +6,7 @@ Payload shapes: Claude (Bash.command, Write/Edit.file_path+content, Read/Grep.pa
 (exec_command/shell .cmd or .command list, apply_patch .input/.patch). Every string field is scanned.
 """
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -19,11 +20,27 @@ READERS = (r"cat|less|more|head|tail|type|bat|grep|rg|sed|awk|strings|xxd|od|bas
 ENV_FILE = r"(?<![\w.-])\.env(?![.\w])"
 ENV_READ = re.compile(rf"(?:^|[\s;&|(])(?:{READERS})\s+(?:[^|;&]*?){ENV_FILE}", re.I)
 PY_OPEN = re.compile(r"(open|read_text|load_dotenv|dotenv_values)\s*\([^)]*['\"][^'\"]*\.env['\"]", re.I)
-KEY_ECHO = re.compile(r"NVIDIA_API_KEY[^\n]*\b(echo|print|write-output|write-host)\b|"
-                      r"\b(echo|printf|print|write-output|write-host|out-host)\b[^\n]*(\$\{?|\$env:|environ)[^\n]*NVIDIA_API_KEY|"
-                      r"(^|[;&|]\s*)(env|printenv|set|export\s+-p)\s*($|[;&|])|get-childitem\s+env:|\bls\s+env:|dir\s+env:", re.I)
-RM_STUDY = re.compile(r"(\brm\s+(-[a-zA-Z]*r[a-zA-Z]*|--recursive)\b|remove-item\b[^;&|]*-r(ecurse)?\b|\brmtree\s*\(|"
-                      r"\brd\s+/s|\brmdir\s+/s)[^;&|]*(estudos|results)", re.I)
+KEY_ECHO = re.compile(r"(^|[;&|]\s*)(env|printenv|set|export|export\s+-p|declare\s+-x)\s*($|[;&|])|"
+                      r"get-childitem\s+env:|\bls\s+env:|\bdir\s+env:|\bgetenv\s*\(|\bdotenv\b[^;&|]*\b(list|get)\b|"
+                      r"print\s*\(\s*(dict\()?os\.environ|/proc/[^\s/]+/environ", re.I)
+KEY_TEST_OK = re.compile(r"(\[\[?|\btest)\s+-[nz]\s+\"?\$\{?NVIDIA_API_KEY\}?\"?\s*\]?\]?", re.I)
+STATE_FILE = re.compile(r"\.(portoes|tentativas|prereg)\b|/\.(p|t)[a-z]*\*", re.I)
+WRITE_OP = re.compile(r">|\btee\b|write|open\s*\(|\bsed\s+-i|\brm\b|\bcp\b|\bmv\b|set-content|out-file|unlink|"
+                      r"remove|add-content|\bdel\b|copy-item|move-item|truncate|json\.dump|rename|replace", re.I)
+REVIEW_FILE = re.compile(r"(^|[/\\])REVISAO\.md$", re.I)
+RM_VERB = re.compile(r"(\brm\b[^;&|\n]*\s(-[a-zA-Z]*[rR][a-zA-Z]*|--recursive)\b|"
+                     r"\b(remove-item|ri|del|erase|rd|rmdir)\b[^;&|\n]*(-r(ecurse)?\b|/s\b)|"
+                     r"\bfind\b[^;&|\n]*-delete\b|\brmtree\s*\()", re.I)
+
+
+def writes_to(command: str, name: str) -> bool:
+    """True when the command modifies a file matching `name` (reads such as `cat x 2>/dev/null` are fine)."""
+    c = re.sub(r"\d?>\s*/dev/null|\d>&\d|>\s*/tmp/\S+", "", command)
+    verbs = (r"tee|sed\s+-i|rm|cp|mv|set-content|out-file|add-content|remove-item|del|erase|truncate|"
+             r"copy-item|move-item|open\s*\(|write_text|write_bytes")
+    return bool(re.search(rf">>?\s*['\"]?[^\s;&|]*(?:{name})", c, re.I) or
+                re.search(rf"\b(?:{verbs})[^;&|\n]*(?:{name})", c, re.I) or
+                re.search(rf"(?:{name})[^;&|\n]{{0,15}}?\b(unlink|write_text|write_bytes|rename|replace)\b", c, re.I))
 
 
 def block(msg: str) -> None:
@@ -76,13 +93,27 @@ def main() -> None:
 
     if re.search(r"(^|[/\\])\.env$", path.strip()) and tool.lower() not in ("write",):
         block("não leia o arquivo de chaves (.env). Para checar a chave use 'agrck doctor' (não exibe o valor).")
-    if shell_like or tool.lower() in ("grep",):
+    if tool.lower() == "grep" and (re.search(r"\.env\b(?!\.)", str(ti.get("glob", ""))) or
+                                   re.search(r"[/\\]agrck[/\\]?$|\.config[/\\]agrck", path)):
+        block("busca no arquivo de chaves (.env) bloqueada. Use 'agrck doctor'.")
+    reviewer = "agrck-revisor" in str(data.get("agent_type", "")) or os.environ.get("AGRCK_ROLE") == "revisor"
+    if not reviewer and (any(REVIEW_FILE.search(t.strip()) for t in targets if tool.lower() != "read") or
+                         (shell_like and writes_to(command, r"REVISAO\.md"))):
+        block("relatorio/REVISAO.md só pode ser escrito pelo revisor independente (subagente agrck-revisor; no "
+              "Codex, sessão com AGRCK_ROLE=revisor) ou pelo próprio usuário fora do agente.")
+    if any(STATE_FILE.search(t) for t in targets if tool.lower() != "read") or \
+            (shell_like and writes_to(command, STATE_FILE.pattern)):
+        block("o estado dos portões/tentativas/pré-registro só é escrito pelo agrck (agrck check / attempt). "
+              "Não edite .portoes.json, .tentativas.json nem .prereg.json.")
+    if shell_like:
         scan = command or blob
-        if ENV_READ.search(scan) or PY_OPEN.search(scan) or KEY_ECHO.search(scan):
+        if "NVIDIA_API_KEY" in KEY_TEST_OK.sub("", scan).upper() or ENV_READ.search(scan) or PY_OPEN.search(scan) \
+                or KEY_ECHO.search(scan):
             block("comando exporia a NVIDIA_API_KEY ou o ambiente. Use 'agrck doctor' para verificar a configuração.")
-        if RM_STUDY.search(scan):
-            block("exclusão recursiva de estudos/resultados: peça confirmação explícita ao usuário e "
-                  "faça-a manualmente se ele aprovar.")
+        for seg in re.split(r"[;&|\n]+", scan):
+            if RM_VERB.search(seg) and re.search(r"estudos|results", seg, re.I):
+                block("exclusão recursiva de estudos/resultados: peça confirmação explícita ao usuário e "
+                      "faça-a manualmente se ele aprovar.")
 
 
 if __name__ == "__main__":

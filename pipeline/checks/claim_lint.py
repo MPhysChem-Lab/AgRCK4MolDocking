@@ -35,9 +35,9 @@ RULES = [
     (r"\bpot[eê]ncia (prevista|calculada)\b", "use 'escore'; potência é medida experimental"),
 ]
 _COMPILED = [(re.compile(p, re.IGNORECASE), s) for p, s in RULES]
-NEGATION = re.compile(r"\b(não|nao|nunca|nem|sem|not|cannot|can't|does not|do not|did not|never|no)\s+(\w+\s+)?$",
-                      re.IGNORECASE)
-LINT_OK = re.compile(r"lint-ok:\s*\S.{2,}", re.IGNORECASE)
+NEGATION = re.compile(r"\b(não|nao|nunca|nem|sem|not|cannot|can't|does not|do not|did not|never|no)\s+"
+                      r"((?!só\b|apenas\b|somente\b|only\b|just\b|merely\b)\w+\s+)?$", re.IGNORECASE)
+LINT_OK = re.compile(r"lint-ok:\s*\S+\s+\S+\s+\S+", re.IGNORECASE)   # reason of at least 3 words
 
 
 def lint_text(text: str) -> list[tuple[int, str, str]]:

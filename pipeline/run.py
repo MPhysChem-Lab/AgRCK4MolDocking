@@ -299,6 +299,9 @@ def main(argv=None) -> int:
             break
     cfg = yaml.safe_load(open(a.config))
     out = Path(a.out)
+    from checks.state import reopen
+    if reopen(out, "E2"):          # inside an AgRCK study: new docking results must pass E2+ again
+        log("study gates E2..E6 reopened: re-run 'agrck check <ID> E2' when docking finishes")
     for d in ("prepared/ligands", "poses", "visualizations", "raw/diffdock"):
         (out / d).mkdir(parents=True, exist_ok=True)
     if a.minimize:

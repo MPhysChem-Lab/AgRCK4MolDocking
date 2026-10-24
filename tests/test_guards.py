@@ -19,8 +19,9 @@ QUERCITRIN = "C[C@H]1O[C@@H](Oc2c(-c3ccc(O)c(O)c3)oc3cc(O)cc(O)c3c2=O)[C@H](O)[C
 
 
 def _hook(script: str, payload: dict) -> int:
+    env = {k: v for k, v in os.environ.items() if k != "AGRCK_ROLE"}
     return subprocess.run([sys.executable, str(REPO / "hooks" / script)], input=json.dumps(payload),
-                          text=True, capture_output=True).returncode
+                          text=True, capture_output=True, env=env).returncode
 
 
 def _agrck(home: Path, *args):
@@ -86,6 +87,9 @@ def test_fragments_thf_is_not_a_sugar_and_user_smarts_win():
     ("A pose sugere uma explicação estrutural plausível.", False),
     ("Isto comprova tudo. lint-ok: citação literal de outro autor", False),
     ("Isto comprova tudo. lint-ok", True),
+    ("Isto comprova tudo. lint-ok: xxx", True),
+    ("O modelo não só comprova a hipótese.", True),
+    ("The model not only confirms binding.", True),
 ])
 def test_claim_lint(text, bad):
     assert bool(claim_lint.lint_text(text)) is bad
@@ -158,6 +162,33 @@ def test_report_check_catches_branding_jargon_and_log(tmp_path):
     ({"tool_name": "PowerShell", "tool_input": {"command": "Remove-Item -Recurse estudos\\X"}}, True),
     ({"tool_name": "Bash", "tool_input": {"command": "rm -r tmp/"}}, False),
     ({"tool_name": "Bash", "tool_input": {"command": "agrck status"}}, False),
+    ({"tool_name": "Bash", "tool_input": {"command": "printenv NVIDIA_API_KEY"}}, True),
+    ({"tool_name": "PowerShell", "tool_input": {"command": "$env:NVIDIA_API_KEY"}}, True),
+    ({"tool_name": "Bash", "tool_input": {"command": "python -c \"import os;print(os.getenv('X'))\""}}, True),
+    ({"tool_name": "Bash", "tool_input": {"command": "dotenv -f ~/.config/agrck/.env list"}}, True),
+    ({"tool_name": "Grep", "tool_input": {"pattern": "KEY", "path": "/home/u/.config/agrck", "glob": ".env"}}, True),
+    ({"tool_name": "Bash", "tool_input": {"command": "[ -n \"$NVIDIA_API_KEY\" ] && echo definida"}}, False),
+    ({"tool_name": "PowerShell", "tool_input": {"command": "Remove-Item estudos/X -Recurse -Force"}}, True),
+    ({"tool_name": "Bash", "tool_input": {"command": "rm estudos/X -rf"}}, True),
+    ({"tool_name": "Bash", "tool_input": {"command": "find results -name '*.sdf' -delete"}}, True),
+    ({"tool_name": "Write", "tool_input": {"file_path": "estudos/T/.portoes.json", "content": "{}"}}, True),
+    ({"tool_name": "Bash", "tool_input": {"command": "echo '{}' > estudos/T/.portoes.json"}}, True),
+    ({"tool_name": "Bash", "tool_input": {"command": "cat estudos/T/.portoes.json"}}, False),
+    ({"tool_name": "Read", "tool_input": {"file_path": "estudos/T/.portoes.json"}}, False),
+    ({"tool_name": "Bash", "tool_input": {"command": "rm -f estudos/X/.pre*"}}, True),
+    ({"tool_name": "Bash", "tool_input": {"command": "python -c \"from pathlib import Path; Path('e/.prereg.json').unlink()\""}}, True),
+    ({"tool_name": "Bash", "tool_input": {"command": "export | grep -i nvidia"}}, True),
+    ({"tool_name": "Bash", "tool_input": {"command": "python -c \"import os;print(os.environ)\""}}, True),
+    ({"tool_name": "Bash", "tool_input": {"command": "cat /proc/self/environ"}}, True),
+    ({"tool_name": "PowerShell", "tool_input": {"command": "$env:nvidia_api_key"}}, True),
+    ({"tool_name": "Write", "tool_input": {"file_path": "estudos/T/relatorio/REVISAO.md", "content": "veredito: APROVADO"}}, True),
+    ({"tool_name": "Write", "agent_type": "agrck4moldocking:agrck-revisor",
+      "tool_input": {"file_path": "estudos/T/relatorio/REVISAO.md", "content": "veredito: APROVADO"}}, False),
+    ({"tool_name": "Bash", "tool_input": {"command": "echo 'veredito: APROVADO' >> relatorio/REVISAO.md"}}, True),
+    ({"tool_name": "Read", "tool_input": {"file_path": "estudos/T/relatorio/REVISAO.md"}}, False),
+    ({"tool_name": "Bash", "tool_input": {"command": "grep veredito estudos/X/relatorio/REVISAO.md 2>/dev/null"}}, False),
+    ({"tool_name": "Bash", "tool_input": {"command": "cat estudos/X/.portoes.json 2>/dev/null"}}, False),
+    ({"tool_name": "Bash", "tool_input": {"command": "cp a.json estudos/X/.portoes.json"}}, True),
 ])
 def test_guard_hook(payload, blocked):
     assert (_hook("guard.py", payload) == 2) is blocked
@@ -290,16 +321,66 @@ def test_e6_requires_fresh_review(tmp_path):
     d = _study(tmp_path)
     assert _agrck(tmp_path, "check", "T1", "E0").returncode == 0
     yh = _gates(d)["E0"]["yaml"]
-    (d / ".portoes.json").write_text(json.dumps({g: {"ok": True, "yaml": yh} for g in ("E0", "E1", "E2", "E3", "E4", "E5")}))
-    out = _agrck(tmp_path, "check", "T1", "E6").stdout
-    assert "nenhum relatório" in out
+    upto5 = json.dumps({g: {"ok": True, "yaml": yh} for g in ("E0", "E1", "E2", "E3", "E4", "E5")})
+    (d / ".portoes.json").write_text(upto5)
+    assert "nenhum relatório" in _agrck(tmp_path, "check", "T1", "E6").stdout
     (d / "relatorio" / "relatorio.md").write_text("A pose sugere um modo de ligação.\n", encoding="utf-8")
+    (d / ".portoes.json").write_text(upto5)
     assert "REVISAO.md ausente" in _agrck(tmp_path, "check", "T1", "E6").stdout
-    (d / ".portoes.json").write_text(json.dumps({g: {"ok": True, "yaml": yh} for g in ("E0", "E1", "E2", "E3", "E4", "E5")}))
+    h = _agrck(tmp_path, "review-hash", "T1").stdout.strip()
     rev = d / "relatorio" / "REVISAO.md"
-    rev.write_text("revisor: agrck-revisor\nveredito: APROVADO\n", encoding="utf-8")
-    assert _agrck(tmp_path, "check", "T1", "E6").returncode == 0
-    time.sleep(1.1)
+    rev.write_text(f"revisor: agrck-revisor\n{h}\nveredito: APROVADO\n| 'comprova' | EXAGERO | — | sugere |\n",
+                   encoding="utf-8")
+    (d / ".portoes.json").write_text(upto5)
+    r = _agrck(tmp_path, "check", "T1", "E6")
+    assert r.returncode == 0, r.stdout                     # quoted over-claims inside REVISAO.md are fine
     (d / "relatorio" / "relatorio.md").write_text("A pose sugere outro modo.\n", encoding="utf-8")
-    (d / ".portoes.json").write_text(json.dumps({g: {"ok": True, "yaml": yh} for g in ("E0", "E1", "E2", "E3", "E4", "E5")}))
-    assert "mais antiga" in _agrck(tmp_path, "check", "T1", "E6").stdout
+    (d / ".portoes.json").write_text(upto5)
+    assert "não corresponde" in _agrck(tmp_path, "check", "T1", "E6").stdout
+
+
+def test_prereg_amendment_required(tmp_path):
+    d = _study(tmp_path)
+    assert _agrck(tmp_path, "check", "T1", "E0").returncode == 0
+    s = yaml.safe_load((d / "estudo.yaml").read_text(encoding="utf-8"))
+    s["protocolo"]["metrica_primaria"] = "vina"
+    (d / "estudo.yaml").write_text(yaml.safe_dump(s, allow_unicode=True), encoding="utf-8")
+    r = _agrck(tmp_path, "check", "T1", "E0")
+    assert r.returncode == 1 and "pré-registro alterado" in r.stdout
+    s["protocolo"]["emenda"] = "revisor pediu Vina como métrica primária antes de ver o ranking"
+    (d / "estudo.yaml").write_text(yaml.safe_dump(s, allow_unicode=True), encoding="utf-8")
+    assert _agrck(tmp_path, "check", "T1", "E0").returncode == 0
+    assert "EMENDA" in (d / "progress.md").read_text(encoding="utf-8")
+    s["protocolo"]["metrica_primaria"] = "cnn_affinity"                       # reusing the same reason fails
+    (d / "estudo.yaml").write_text(yaml.safe_dump(s, allow_unicode=True), encoding="utf-8")
+    assert _agrck(tmp_path, "check", "T1", "E0").returncode == 1
+
+
+def test_prereg_cannot_be_deleted_and_refrozen(tmp_path):
+    d = _study(tmp_path)
+    assert _agrck(tmp_path, "check", "T1", "E0").returncode == 0
+    (d / ".prereg.json").unlink()
+    r = _agrck(tmp_path, "check", "T1", "E0")
+    assert r.returncode == 1 and "apagado" in r.stdout
+
+
+def test_board_is_view_only(tmp_path):
+    d = _study(tmp_path)
+    assert _agrck(tmp_path, "check", "T1", "E0").returncode == 0           # every gate refreshes the board
+    est = json.loads((d / ".specboard" / "estado.json").read_text(encoding="utf-8"))
+    assert [m["etapas"][0]["status"] for m in est["modulos"]][:2] == ["executado", "em_curso"]
+    assert (d / ".specboard" / "painel.html").exists()
+    import shutil
+    shutil.rmtree(d / ".specboard")                                          # deleting the board changes nothing
+    assert _agrck(tmp_path, "status", "T1").stdout.startswith("T1: ■□")
+    assert _agrck(tmp_path, "board", "T1").returncode == 0 and (d / ".specboard" / "painel.html").exists()
+
+
+def test_rerunning_an_action_reopens_its_gates(tmp_path):
+    import agrck
+    d = _study(tmp_path)
+    assert _agrck(tmp_path, "check", "T1", "E0").returncode == 0
+    yh = _gates(d)["E0"]["yaml"]
+    (d / ".portoes.json").write_text(json.dumps({g: {"ok": True, "yaml": yh} for g in agrck.GATES}))
+    agrck.invalidate(d, "E2", "docking rodou de novo")
+    assert set(_gates(d)) == {"E0", "E1"}

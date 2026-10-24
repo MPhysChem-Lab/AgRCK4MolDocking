@@ -36,7 +36,7 @@ def main() -> None:
             bad = [n for n, l in enumerate(p.read_text(encoding="utf-8").splitlines(), 1)
                    if FACT.match(l) and "fonte:" not in l.lower()]
             msgs += [f"{p.name}:{n}: fato sem '(fonte: arquivo/CSV)'; interpretação vai no relatório" for n in bad]
-        elif p.suffix in (".tex", ".md") and ("relatorio" in p.parts or p.name == "RESUMO.md"):
+        elif p.suffix in (".tex", ".md") and p.name != "REVISAO.md" and ("relatorio" in p.parts or p.name == "RESUMO.md"):
             import claim_lint
             msgs += [f"{p.name}:{n}: '{w}' -> {s}"
                      for n, w, s in claim_lint.lint_text(p.read_text(encoding="utf-8", errors="replace"))]

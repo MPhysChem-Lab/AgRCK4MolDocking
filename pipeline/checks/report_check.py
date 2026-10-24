@@ -44,7 +44,8 @@ def _included(report_dir: Path, main: str) -> list[Path]:
 
 def check(report_dir: Path, main: str, extra_forbidden: list[str], max_overfull_pt: float) -> list[str]:
     errs: list[str] = []
-    texts = _included(report_dir, main) if (report_dir / main).exists() else sorted(report_dir.rglob("*.md"))
+    texts = _included(report_dir, main) if (report_dir / main).exists() else \
+        sorted(p for p in report_dir.rglob("*.md") if p.name != "REVISAO.md")   # the review quotes over-claims
     for p in texts:
         raw = p.read_text(encoding="utf-8", errors="replace")
         body = _strip_tex_comments(raw) if p.suffix == ".tex" else raw
@@ -71,6 +72,8 @@ def check(report_dir: Path, main: str, extra_forbidden: list[str], max_overfull_
             errs.append(f"{log.name} não encontrado: compile o relatório antes da checagem")
         else:
             lt = log.read_text(encoding="latin-1", errors="replace")
+            if any(p.stat().st_mtime > log.stat().st_mtime + 2 for p in texts):
+                errs.append(f"{log.name} é mais antigo que o .tex: recompile antes da checagem")
             if re.search(r"^! ", lt, re.M):
                 errs.append("erros de compilação LaTeX ('! ' no log)")
             if "undefined references" in lt or re.search(r"Reference `[^']+' on page \d+ undefined", lt):

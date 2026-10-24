@@ -84,6 +84,8 @@ def main(spec_path: str) -> None:
     rel = lambda p: (sp.parent / p).resolve()
     out = rel(s["saida"])
     out.parent.mkdir(parents=True, exist_ok=True)
+    from checks.state import reopen
+    reopen(out, "E5")              # a new or changed figure must pass E5 again
     scene()
     cmd.load(str(rel(s["receptor"])), "rec")
     cmd.remove(f"rec and not chain {s.get('cadeia', 'A')}")

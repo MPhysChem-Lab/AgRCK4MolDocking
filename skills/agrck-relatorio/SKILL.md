@@ -24,7 +24,8 @@ description: Etapa E6 — escreve o RESUMO.md e, se pedido, o relatório LaTeX/P
 4. Rode `agrck report <ID>` e corrija até zerar. O hook já roda o lint a cada edição.
 5. **Revisão independente:** chame o `agrck-revisor`, que nunca é quem escreveu. Ele confere cada número e cada
    atribuição contra os CSVs e grava `relatorio/REVISAO.md`.
-   - Corrija os itens `- [ ]` e chame o revisor de novo. Qualquer edição posterior torna a revisão antiga.
+   - Corrija os itens `- [ ]` no **relatório** (nunca edite a REVISAO.md) e chame o revisor de novo. O E6 compara
+     o `hash_relatorio` com o texto atual: qualquer edição posterior exige nova revisão.
    - Se o usuário revisar pessoalmente, registre `revisor: <nome>` e o veredito dele.
 6. Abra e inspecione **todas** as páginas do PDF: figuras, tabelas na margem, numeração e legendas.
 7. Entregue com uma lista curta: o que mostra, o que não mostra (limitações) e o que testar experimentalmente.

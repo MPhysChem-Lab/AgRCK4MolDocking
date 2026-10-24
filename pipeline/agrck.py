@@ -13,6 +13,8 @@
   agrck figure ID SPEC.yaml            3D figure (open-source PyMOL; manifest; retry budget)       (needs E4)
   agrck lint FILE...                   over-claiming language check
   agrck report ID                      report pre-delivery check (+ lint, + independent review)    (needs E5)
+  agrck review-hash ID                 hash of the current report text (the reviewer writes it in REVISAO.md)
+  agrck board ID [--open]              read-only progress panel (specboard), also refreshed after every gate
   agrck root                           print the repository path
 
 Gates in order: E0 questionnaire, E1 structures, E2 docking, E3 ranking, E4 interactions, E5 figures, E6 report. E0 freezes estudo.yaml (pre-registration):
@@ -125,6 +127,42 @@ def record_gate(d: Path, gate: str, ok: bool) -> None:
     (d / ".portoes.json").write_text(json.dumps(st, indent=1))
     _sync_checkboxes(d, st)
     log_progress(d, f"portão {gate}: {'OK' if ok else 'FALHOU'}")
+    refresh_board(d)
+
+
+def invalidate(d: Path, gate: str, why: str) -> None:
+    """An action re-ran: its gate and everything after it must be checked again."""
+    st = gate_state(d)
+    drop = ({gate} | _dependents(gate)) & set(st)
+    if drop:
+        for g in drop:
+            st.pop(g)
+        (d / ".portoes.json").write_text(json.dumps(st, indent=1))
+        _sync_checkboxes(d, st)
+        log_progress(d, f"{why}: portões {sorted(drop)} reabertos")
+        refresh_board(d)
+
+
+def refresh_board(d: Path, open_browser: bool = False) -> Path | None:
+    """Regenerate the read-only specboard panel (visualization only; never blocks anything)."""
+    import board
+    try:
+        s = yaml.safe_load((d / "estudo.yaml").read_text(encoding="utf-8")) or {}
+    except Exception:  # noqa: BLE001
+        return None
+    return board.build(d, s, open_browser)
+
+
+def review_hash(d: Path) -> str:
+    """Hash of the report text (all .tex/.md in relatorio/ except REVISAO.md, plus results/RESUMO.md)."""
+    rel = d / "relatorio"
+    files = sorted(p for ext in ("*.tex", "*.md", "*.bib") for p in rel.rglob(ext) if p.name != "REVISAO.md")
+    if (d / "results" / "RESUMO.md").exists():
+        files.append(d / "results" / "RESUMO.md")
+    h = hashlib.sha256()
+    for p in files:
+        h.update(p.name.encode() + b"|" + p.read_bytes())
+    return h.hexdigest()[:16]
 
 
 def require(d: Path, *gates: str) -> None:
@@ -209,6 +247,7 @@ def cmd_new(a) -> int:
         if not (HOME / f).exists():
             shutil.copy(TEMPLATES / "workspace" / f, HOME / f)
     log_progress(d, "estudo criado")
+    refresh_board(d)
     print(f"criado {d}\nPróximo: preencher estudo.yaml (entrevista E0) e rodar 'agrck check {a.id} E0'")
     return 0
 
@@ -303,6 +342,7 @@ def cmd_fetch(a) -> int:
     res = next((l[10:].strip() for l in r.text.splitlines() if l.startswith("REMARK   2 RESOLUTION")), "?")
     print(f"{out.name}: resolução {res}; cadeias {chains}; HETATM: {', '.join(het) or '—'}")
     log_progress(d, f"E1 baixado {code} ({res})")
+    invalidate(d, "E1", "estrutura baixada de novo")
     return 0
 
 
@@ -321,6 +361,7 @@ def cmd_dock(a) -> int:
     if a.print:
         return 0
     log_progress(d, "E2 docking iniciado")
+    invalidate(d, "E2", "docking rodou de novo")
     r = subprocess.run(cmd)
     log_progress(d, f"E2 docking terminou (exit {r.returncode})")
     return r.returncode
@@ -330,6 +371,7 @@ def cmd_interactions(a) -> int:
     d, s = load_study(a.id)
     require(d, "E3")
     cfg = _study_config(d, s)
+    invalidate(d, "E4", "interações recalculadas")
     return subprocess.run([py(), str(ROOT / "interactions.py"), "--results", str(d / "results"),
                            "--config", str(cfg), "--top", "0"]).returncode
 
@@ -383,7 +425,21 @@ def cmd_figure(a) -> int:
     if cmd_attempt(argparse.Namespace(id=a.id, task=task, max=None)) == 3:
         return 3
     pymol_py = os.environ.get("AGRCK_PYMOL_PYTHON", py())
+    invalidate(d, "E5", "figura renderizada de novo")
     return subprocess.run([pymol_py, str(ROOT / "estilos" / "render_figure.py"), str(Path(a.spec).resolve())]).returncode
+
+
+def cmd_review_hash(a) -> int:
+    d, _ = load_study(a.id)
+    print(f"hash_relatorio: {review_hash(d)}")
+    return 0
+
+
+def cmd_board(a) -> int:
+    d, _ = load_study(a.id)
+    out = refresh_board(d, a.open)
+    print(f"painel (só visualização): {out}" if out else "não foi possível gerar o painel (não afeta o estudo)")
+    return 0
 
 
 def cmd_root(_a) -> int:
@@ -410,6 +466,10 @@ def report_errors(d: Path) -> list[str]:
     if resumo.exists():
         errs += [f"RESUMO.md:{n}: '{w}' -> {sug}" for n, w, sug in
                  claim_lint.lint_text(resumo.read_text(encoding="utf-8"))]
+    pre = d / ".prereg.json"
+    emendas = json.loads(pre.read_text()).get("emendas", []) if pre.exists() else []
+    if emendas and not any(re.search(r"emenda", p.read_text(encoding="utf-8", errors="replace"), re.I) for p in docs):
+        errs.append(f"o pré-registro teve {len(emendas)} emenda(s) e o relatório não as declara (use a palavra 'emenda')")
     rev = rel / "REVISAO.md"
     if not rev.exists():
         errs.append("relatorio/REVISAO.md ausente: rode a revisão independente (agrck-revisor) ou registre a do usuário")
@@ -421,10 +481,11 @@ def report_errors(d: Path) -> list[str]:
         if not ver or not ver.group(1).strip().upper().startswith("APROVADO"):
             errs.append("REVISAO.md sem 'veredito: APROVADO' (ou APROVADO COM CORREÇÕES)")
         if re.search(r"^\s*- \[ \]", t, re.M):
-            errs.append("REVISAO.md tem correções não resolvidas (- [ ])")
-        newest = max(p.stat().st_mtime for p in docs)
-        if rev.stat().st_mtime < newest:
-            errs.append("REVISAO.md é mais antiga que o relatório: revise a versão atual")
+            errs.append("REVISAO.md tem correções pendentes (- [ ]): corrija e peça NOVA revisão")
+        hv = re.search(r"^hash_relatorio:\s*(\w+)", t, re.M)
+        if not hv or hv.group(1) != review_hash(d):
+            errs.append("REVISAO.md não corresponde ao texto atual (hash_relatorio difere): o relatório mudou "
+                        "depois da revisão — peça nova revisão")
     return errs
 
 
@@ -465,10 +526,29 @@ def _local(d: Path, p: str) -> Path | None:
     return d / "results" / Path(*q.parts[1:]) if len(q.parts) > 1 else d / "results" / q
 
 
+PREREG = ("metrica_primaria", "composto_lider", "max_dist_sitio_A", "poses")
+
+
 def gate_E0(d: Path, s: dict) -> list[str]:
     from checks.metric_audit import METRICS
     e = []
     alvo, p = s.get("alvo", {}) or {}, s.get("protocolo", {}) or {}
+    f = d / ".prereg.json"
+    now_reg = {k: p.get(k) for k in PREREG}
+    pending = None
+    log = (d / "progress.md").read_text(encoding="utf-8") if (d / "progress.md").exists() else ""
+    if not f.exists() and "portão E0: OK" in log:
+        e.append("pré-registro (.prereg.json) apagado depois de um E0 aprovado: restaure-o; não é possível "
+                 "re-pré-registrar um estudo em andamento")
+    if f.exists():
+        old = json.loads(f.read_text())
+        changed = {k: (old.get(k), now_reg[k]) for k in PREREG if old.get(k) != now_reg[k]}
+        emenda = str(p.get("emenda") or "").strip()
+        if changed and (not emenda or emenda in old.get("emendas", [])):
+            e.append(f"pré-registro alterado {changed}: volte ao valor original ou declare em protocolo.emenda um "
+                     f"motivo NOVO (cada emenda é registrada e precisa aparecer no relatório)")
+        elif changed:   # recorded only if the rest of E0 passes (see end of function)
+            pending = (changed, {**now_reg, "emendas": old.get("emendas", []) + [emenda]})
     if not alvo.get("pdb"):
         e.append("alvo.pdb vazio")
     ligs = ligands(s)
@@ -497,6 +577,11 @@ def gate_E0(d: Path, s: dict) -> list[str]:
     ex = s.get("execucao", {}) or {}
     if ex.get("onde") == "ssh" and not (ex.get("host_ssh") and ex.get("dir_remoto")):
         e.append("execucao ssh sem host_ssh/dir_remoto")
+    if not e and not f.exists():
+        f.write_text(json.dumps(now_reg))          # first successful E0 freezes the pre-registration
+    elif not e and pending:
+        log_progress(d, f"EMENDA ao pré-registro {pending[0]}: {p.get('emenda')}")
+        f.write_text(json.dumps(pending[1]))
     return e
 
 
@@ -645,6 +730,9 @@ def main(argv=None) -> int:
     x = sub.add_parser("figure"); x.add_argument("id"); x.add_argument("spec"); x.set_defaults(f=cmd_figure)
     x = sub.add_parser("lint"); x.add_argument("files", nargs="+"); x.set_defaults(f=cmd_lint)
     x = sub.add_parser("report"); x.add_argument("id"); x.set_defaults(f=cmd_report)
+    x = sub.add_parser("review-hash"); x.add_argument("id"); x.set_defaults(f=cmd_review_hash)
+    x = sub.add_parser("board"); x.add_argument("id"); x.add_argument("--open", action="store_true")
+    x.set_defaults(f=cmd_board)
     sub.add_parser("root").set_defaults(f=cmd_root)
     a = ap.parse_args(argv)
     return a.f(a)

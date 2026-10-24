@@ -24,3 +24,4 @@ perguntar se continua. Nenhum: skill `agrck-iniciar`.
 8. `MEMORIA.md` só recebe fato com `(fonte: ...)`.
 
 Delegue por atividade (modelo e esforço em `docs/ORQUESTRACAO.md`). Leia saídas do `agrck`, não arquivos inteiros.
+Painel visual para o usuário: `agrck board ID --open`. É só visualização, atualizado sozinho a cada portão.

@@ -49,7 +49,7 @@ O Codex não fixa modelo por subagente como o Claude Code. Use o esforço por se
 ```bash
 codex -c model_reasoning_effort="medium"                       # sessão de trabalho
 codex exec -c model_reasoning_effort="low"  "agrck dock ID"    # tarefa mecânica
-codex exec -c model_reasoning_effort="high" "$(cat ~/AgRCK4MolDocking/agents/agrck-revisor.md) Revise estudos/ID/relatorio"
+AGRCK_ROLE=revisor codex exec -c model_reasoning_effort="high" "$(cat ~/AgRCK4MolDocking/agents/agrck-revisor.md) Revise estudos/ID/relatorio"
 ```
 
 ## Limitações conhecidas

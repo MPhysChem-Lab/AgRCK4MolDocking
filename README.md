@@ -31,6 +31,21 @@ checagem automática. A lista completa está em `templates/memoria/LICOES.md`. E
 
 Detalhes em [docs/ARQUITETURA.md](docs/ARQUITETURA.md) e [docs/ORQUESTRACAO.md](docs/ORQUESTRACAO.md).
 
+## Painel de acompanhamento (specboard)
+
+`agrck board ID --open` abre um painel HTML com:
+- **Você está aqui:** a etapa atual.
+- **Mapa:** E0–E6 com dependências.
+- **Progresso:** quanto do estudo já passou nos portões.
+
+O painel usa o renderizador do [specboard](https://github.com/fatioleg/specboard), copiado em `vendor/specboard`. Ele
+é **só visualização**:
+- é regenerado sozinho a cada `agrck check` ou reabertura de portão;
+- não tem travas, hooks nem comandos de verificação;
+- apagá-lo não muda nada no estudo.
+
+Nele, "verificado" significa portão do `agrck` aprovado.
+
 ## Instalação
 
 - Ambiente científico: [docs/INSTALACAO.md](docs/INSTALACAO.md).
@@ -74,3 +89,14 @@ tests/  examples/3PTB/        testes (tripsina + benzamidina, dados públicos)
 
 Validação científica do pipeline: redocking 3PTB e testes em `tests/`. O docking gera hipóteses estruturais e
 não substitui o ensaio experimental.
+
+## Limitações conhecidas
+
+- As travas de shell são regex. Elas pegam os caminhos comuns e acidentais, mas um agente determinado a
+  contorná-las consegue. A defesa final é a revisão independente mais o "ok" humano em cada portão.
+- Execução remota: se `run.py` for rodado à mão no servidor, os portões locais só reabrem no próximo
+  `agrck dock`/`check` local. Prefira sempre `agrck dock`.
+- O E6 confere que o relatório menciona a palavra "emenda" quando há emendas, não o conteúdo de cada uma.
+  O revisor confere o resto.
+- O painel (specboard) mostra os portões automáticos como "verificado". O "ok" do usuário fica registrado na
+  conversa e em `progress.md`, não no painel.

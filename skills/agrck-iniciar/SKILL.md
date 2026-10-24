@@ -33,6 +33,7 @@ preenchido, use-o e pergunte só o que faltar.
 4. Explique o pré-registro em uma frase: "fixamos a métrica antes de ver os números para não escolher a que
    favorece o composto que queremos". Avise também que todas as métricas serão relatadas.
 5. Grave as respostas em `estudo.yaml`. Rode `agrck check <ID> E0` até passar.
-6. Mostre um resumo de 5 linhas do plano e peça o "ok" explícito antes do E1. Atualize "Estado" no `progress.md`.
+6. Abra o painel visual com `agrck board <ID> --open` (só visualização; sem travas). Mostre um resumo de 5 linhas
+   do plano e peça o "ok" explícito antes do E1. Atualize "Estado" no `progress.md`.
 
 Se o usuário for leigo, defina cada termo na primeira vez (pose, sítio, redocking, pKa).

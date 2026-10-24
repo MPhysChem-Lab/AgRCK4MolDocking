@@ -27,8 +27,11 @@ Grave `estudos/<ID>/relatorio/REVISAO.md` neste formato. O portão E6 lê esse a
 novo que o relatório:
 ```
 revisor: agrck-revisor
+hash_relatorio: <saída de `agrck review-hash ID`, rodado por você no fim da revisão>
 veredito: APROVADO | APROVADO COM CORREÇÕES | REPROVADO
 | trecho | veredito | fonte | correção |
-- [ ] correção pendente 1        (o redator marca [x] depois de corrigir; você revisa de novo)
+- [ ] correção pendente 1
 ```
+Só aprove (APROVADO, sem `- [ ]`) quando não houver nada pendente. Se houver correções, o redator corrige e
+você revisa **de novo** do zero. Qualquer mudança no texto altera o hash e reabre o E6.
 Responda ao agente principal só com o veredito e o número de correções.
