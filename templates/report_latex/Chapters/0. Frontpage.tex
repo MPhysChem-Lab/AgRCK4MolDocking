@@ -1,0 +1,39 @@
+\begin{titlepage}
+
+\centering
+
+\begin{tikzpicture}
+
+\node[text width = 0.8\textwidth](title){\sffamily\huge\reporttitle};
+
+\node[text width = 0.8\textwidth, yshift = 0.75cm, below = of title](subtitle){\sffamily\Large \reportsubtitle};
+
+\gettikzxy{(subtitle.south)}{\subtitlex}{\subtitley}
+\gettikzxy{(title.north)}{\titlex}{\titley}
+\draw[line width=1mm, corDestaque]($(title.west)+(-0.4,0)$) +(0,\subtitley) -- +(0,\titley);
+
+\end{tikzpicture}
+\vspace{2.5cm}
+
+{\sffamily\groupnumber}
+
+\begin{table}[H]
+\centering
+\sffamily
+\large
+\begin{tabularx}{0.85\linewidth}{lX}
+\textbf{Pesquisador(a)} & \textbf{Vínculo}\\
+\hline
+\reportauthors
+\end{tabularx}
+
+\end{table}
+
+{\sffamily \grouptutor}
+
+\mbox{}
+\vfill
+{\color{corDestaque}\rule{\linewidth}{1mm}}\\[6pt]
+\sffamily \Large \textcolor{corDestaque}{\placeanddate} \\
+
+\end{titlepage}

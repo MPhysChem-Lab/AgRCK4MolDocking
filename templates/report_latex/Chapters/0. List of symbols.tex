@@ -1,0 +1,25 @@
+\section*{Lista de Símbolos, Siglas e Grandezas Físico-Químicas} \label{section: symbols}
+
+\begin{table}[H]
+\centering
+\caption{Siglas, sub-sítios e grandezas físico-químicas empregadas neste estudo.}
+\vspace{4pt}
+\small
+\renewcommand{\arraystretch}{1.22}
+\begin{tabularx}{\textwidth}{>{\bfseries}l X l}
+\toprule
+\textbf{Símbolo / Sigla} & \textbf{Conceito Bioquímico ou Físico-Químico} & \textbf{Unidade / Escala} \\
+\midrule
+PREENCHER & Alvo(s) e sub-sítios do receptor (ex.: sítio catalítico, sítio periférico, tríade catalítica), com os resíduos de cada um & --- \\
+$\Delta G_{\text{Vina}}$ & Escore empírico de interação da função do AutoDock Vina (não é energia livre experimental) & $\text{kcal}\cdot\text{mol}^{-1}$ \\
+$\text{CNN}_{\text{score}}$ & Probabilidade, estimada pela rede neural convolucional 3D do GNINA, de a pose estar a menos de $2,0\text{ \AA}$ da geometria nativa & $[0, 1]$ \\
+$\text{CNN}_{\text{affinity}}$ & Afinidade predita pelo comitê de redes convolucionais 3D & $\text{p}K$ \\
+$\text{LE}_{\text{Vina}}$ & Eficiência do Ligante: $-\Delta G_{\text{Vina}} / N_{\text{pesados}}$ & $\text{kcal}\cdot\text{mol}^{-1}\cdot\text{HA}^{-1}$ \\
+$\text{RMSD}$ & Desvio quadrático médio dos átomos pesados entre a pose do \textit{redocking} e o cristal (corrigido por simetria) & $\text{\AA}$ (meta $\le 2,0\text{ \AA}$) \\
+$d_{\text{sítio}}$ & Distância entre o centroide do ligante ancorado e o centroide do ligante cocristalizado & $\text{\AA}$ \\
+$N_{\text{válidas}}/N$ & Fração das poses amostradas aprovada nas verificações físicas e estereoquímicas do PoseBusters & fração \\
+$N_{\text{sítio}}/N$ & Poses fisicamente válidas que ocupam a cavidade ativa & fração \\
+$\angle(\text{D--H}\cdots\text{A})$ & Ângulo doador--hidrogênio--aceitador de uma ligação de hidrogênio & graus ($^\circ$) \\
+\bottomrule
+\end{tabularx}
+\end{table}

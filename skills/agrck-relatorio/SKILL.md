@@ -18,9 +18,13 @@ description: Etapa E6 — escreve o RESUMO.md e, se pedido, o relatório LaTeX/P
    - 4 Conclusões e perspectivas, incluindo as limitações.
    - Referências.
    - Notação formal: ΔG_Vina, LE_Vina, d_sítio. Sem nomes de script, de coluna ou do agente.
-3. LaTeX: copie `$(agrck root)/templates/report_latex/` para `estudos/<ID>/relatorio/`. Preencha `instituicao`;
-   nunca reaproveite marca de outro template. Compile com `pdflatex`, `bibtex` e `pdflatex` ×2, delegando ao
-   `agrck-executor`.
+3. LaTeX: copie `$(agrck root)/templates/report_latex/` para `estudos/<ID>/relatorio/`.
+   - Preencha os dados da capa e do cabeçalho em `General/Settings.tex`: título, autores, instituição, local e data.
+   - Escreva os capítulos em `Chapters/`: Resumo, Lista de símbolos, Introdução (com a tabela de estruturas 2D),
+     Metodologia, Resultados e Conclusões.
+   - Coloque as figuras em `Figures/` (`Estruturas`, `3D`, `2D`).
+   - Nenhum `PREENCHER` pode restar.
+   - Compile com `pdflatex`, `bibtex` e `pdflatex` ×2, delegando ao `agrck-executor`.
 4. Rode `agrck report <ID>` e corrija até zerar. O hook já roda o lint a cada edição.
 5. **Revisão independente:** chame o `agrck-revisor`, que nunca é quem escreveu. Ele confere cada número e cada
    atribuição contra os CSVs e grava `relatorio/REVISAO.md`.

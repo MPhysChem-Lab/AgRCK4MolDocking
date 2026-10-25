@@ -1,0 +1,36 @@
+\section{Protocolo de Modelagem Molecular} \label{section: methodology}
+
+\subsection{Fundamentação da Abordagem Híbrida de \textit{Docking}}
+
+A predição do modo de ligação em cavidades profundas e confinadas precisa contornar duas limitações conhecidas \cite{Buttenschoen2024PoseBusters, McNutt2025GNINA13}:
+\begin{itemize}
+    \item \textbf{Amostragem limitada dos métodos clássicos em cavidades estreitas:} buscas estocásticas locais encontram dificuldade para transladar e rotacionar ligantes flexíveis através de constrições estreitas.
+    \item \textbf{Geometria imperfeita de modelos generativos puros:} modelos de difusão equivariante no grupo $\text{SE}(3)$, como o \textit{DiffDock} \cite{Corso2023DiffDock, Corso2024DiffDockL}, exploram toda a proteína sem caixa de busca, mas podem gerar choques estéricos ou tensões torcionais, por não incluírem um termo explícito de repulsão de curto alcance \cite{Buttenschoen2024PoseBusters}.
+\end{itemize}
+
+Para combinar a busca global da difusão com o rigor dos campos de força, empregou-se um protocolo sequencial em seis etapas:
+
+\begin{enumerate}
+    \item \textbf{Seleção e preparo do receptor:} PREENCHER: estrutura cristalográfica (código PDB, resolução, ligante cocristalizado), cadeia retida e cofatores mantidos. O ligante cocristalizado define o centro do sítio ativo ($d_{\text{sítio}} = 0\text{ \AA}$) e serve de controle de \textit{redocking}. Glicanos de superfície e cossolventes de cristalização foram removidos.
+
+    \item \textbf{Microespécies no pH do ensaio e geração conformacional:} os ligantes foram construídos com configuração absoluta definida em todos os estereocentros. O estado de protonação foi decidido pela equação de Henderson--Hasselbalch no pH do ensaio (PREENCHER):
+    \begin{equation}
+        \%\text{Protonada} = \frac{100}{1 + 10^{(\text{pH} - \text{p}K_a)}}
+    \end{equation}
+    Os confôrmeros iniciais foram gerados pelo algoritmo \texttt{ETKDGv3} \cite{Riniker2015ETKDG} e otimizados no campo de força \texttt{MMFF94}.
+
+    \item \textbf{Amostragem global por difusão:} para cada ligante, PREENCHER poses independentes foram geradas pelo \textit{DiffDock-L} \cite{Corso2023DiffDock, Corso2024DiffDockL}, com restauração posterior da topologia química (ordens de ligação, cargas formais e hidrogênios explícitos).
+
+    \item \textbf{Minimização local e validação física:} cada pose foi minimizada no receptor rígido com o \texttt{GNINA 1.3} \cite{McNutt2021GNINA10, McNutt2025GNINA13} e auditada pela suíte \texttt{PoseBusters} \cite{Buttenschoen2024PoseBusters}, que verifica comprimentos e ângulos de ligação, planaridade, quiralidade, choques intramoleculares e distância mínima proteína--ligante.
+
+    \item \textbf{Pontuação, eficiência do ligante e critério topológico:} as poses válidas foram avaliadas por $\text{CNN}_{\text{score}}$, $\text{CNN}_{\text{affinity}}$ e $\Delta G_{\text{Vina}}$. Como escores aditivos favorecem moléculas maiores, calculou-se a eficiência do ligante:
+    \begin{equation}
+        \text{LE}_{\text{Vina}} = \frac{-\Delta G_{\text{Vina}}}{N_{\text{pesados}}}
+        \label{eq:le_vina}
+    \end{equation}
+    A pose representativa de cada ligante é a de maior $\text{CNN}_{\text{score}}$ entre as poses aprovadas no PoseBusters e situadas no sítio ativo ($d_{\text{sítio}} \le$ PREENCHER $\text{\AA}$). A métrica usada para comparar os ligantes (PREENCHER) foi definida antes da obtenção dos resultados, e todas as métricas são relatadas.
+
+    \item \textbf{Protonação do receptor e mapeamento de interações:} o receptor foi protonado no pH do ensaio com \texttt{PDB2PQR}/\texttt{PROPKA3} \cite{Olsson2011PROPKA3, Jurrus2018PDB2PQR}, e as interações foram tipificadas pelo \texttt{ProLIF} \cite{Bouysset2021ProLIF} com critérios de distância e de ângulo (ligação de hidrogênio, empilhamento $\pi$, cátion--$\pi$, contatos hidrofóbicos). Cada interação é atribuída ao fragmento do ligante (anel, açúcar ou substituinte) pelos índices atômicos.
+\end{enumerate}
+
+PREENCHER: tabela de propriedades físico-químicas dos ligantes (carga no pH do ensaio, massa molar, $N_{\text{pesados}}$, cLogP, TPSA, doadores/aceitadores de H, ligações rotacionáveis); use resizebox na tabela se houver muitas colunas.

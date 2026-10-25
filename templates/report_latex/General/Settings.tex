@@ -1,0 +1,92 @@
+% ======================= DADOS DO RELATÓRIO (preencha) =======================
+% Título do relatório
+\newcommand\reporttitle{PREENCHER: Modelagem Molecular e Relação Estrutura--Atividade de <série> frente a <alvo>}
+
+% Subtítulo (projeto, evento, disciplina...)
+\newcommand\reportsubtitle{PREENCHER: Estudo teórico-computacional de suporte a <projeto>}
+
+% Grupo / laboratório (aparece na capa)
+\newcommand\groupnumber{\textbf{PREENCHER: Laboratório / Grupo --- Instituição}}
+
+% Autores: "Nome & Vínculo \\" por linha
+\newcommand\reportauthors{
+PREENCHER: Nome do(a) autor(a) & Vínculo \\
+}
+
+% Instituição (linha abaixo da tabela de autores)
+\newcommand\grouptutor{PREENCHER: Instituto --- Universidade}
+
+% Local e data
+\newcommand\placeanddate{PREENCHER: Cidade --- UF, Mês de Ano}
+
+% Cabeçalho das páginas internas (esquerda e direita)
+\newcommand\cabecalhoesq{PREENCHER: Grupo --- Instituição}
+\newcommand\cabecalhodir{PREENCHER: título curto}
+
+% Cor de destaque (títulos, marcadores, links)
+\definecolor{corDestaque}{RGB}{0, 51, 102}
+% ==============================================================================
+
+% Sets up hyperlinks in the document to be colored
+\hypersetup{
+    colorlinks=true,
+    linkcolor=corDestaque,
+    urlcolor=corDestaque,
+    citecolor = corDestaque
+    }
+\urlstyle{same}
+
+% Portuguese names for ToC, Tables, Figures and Bibliography
+\renewcommand{\contentsname}{Sumário}
+\renewcommand{\figurename}{Figura}
+\renewcommand{\tablename}{Tabela}
+\renewcommand{\refname}{Referências Bibliográficas}
+\crefname{figure}{Figura}{Figuras}
+\Crefname{figure}{Figura}{Figuras}
+\crefname{table}{Tabela}{Tabelas}
+\Crefname{table}{Tabela}{Tabelas}
+\crefname{section}{Seção}{Seções}
+\Crefname{section}{Seção}{Seções}
+\crefname{equation}{Equação}{Equações}
+\Crefname{equation}{Equação}{Equações}
+
+% Change bullet style for level 1, 2 and 3 respectively for itemize
+\renewcommand{\labelitemi}{\scriptsize\textcolor{corDestaque}{$\blacksquare$}}% level 1
+\renewcommand{\labelitemii}{\scriptsize\textcolor{corDestaque}{$\square$}}% level 2
+\renewcommand{\labelitemiii}{\textcolor{corDestaque}{$\circ$}}% level 3
+
+% Change bullet style for level 1, 2 and 3 respectively for enumerate
+\renewcommand{\labelenumi}{\textbf{\textcolor{corDestaque}{\arabic*.}}}% level 1
+\renewcommand{\labelenumii}{\textbf{\textcolor{corDestaque}{[\alph*]}}}% level 2
+\renewcommand{\labelenumiii}{\textbf{\textcolor{corDestaque}{\roman*.}}}% level 3
+
+% Have reference labels be linked to section
+\counterwithin{equation}{section}
+\counterwithin{figure}{section}
+\counterwithin{table}{section}
+
+% Creates header/footer
+\pagestyle{fancy}
+\lhead{\small\sffamily\textcolor{corDestaque}{\cabecalhoesq}}
+\rhead{\small \cabecalhodir}
+\renewcommand{\footrulewidth}{0.4pt}
+\cfoot{Página \thepage}
+
+% Formats section, subsection and subsubsection titles respectively
+\titleformat{\section}{\sffamily\color{corDestaque}\Large\bfseries}{\thesection\enskip\color{gray}\textbar\enskip}{0cm}{}
+\titleformat{\subsection}{\sffamily\color{corDestaque}\large\bfseries}{\thesubsection\enskip\color{gray}\textbar\enskip}{0cm}{}
+\titleformat{\subsubsection}{\sffamily\color{corDestaque}\bfseries}{\thesubsubsection\enskip\color{gray}\textbar\enskip}{0cm}{}
+
+% Formats captions
+\DeclareCaptionFont{corDestaque}{\color{corDestaque}}
+\captionsetup{labelfont={corDestaque,bf}, font=small}
+
+% Changes font to mlmodern
+\usepackage{mlmodern}
+
+% Removes indent when starting a new paragraph
+\setlength\parindent{0pt}
+\setlength\parskip{5pt}
+
+% Limits the ToC to sections and subsections
+\setcounter{tocdepth}{2}

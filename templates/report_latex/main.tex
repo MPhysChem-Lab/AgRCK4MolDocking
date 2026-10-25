@@ -1,64 +1,49 @@
-% Relatório de docking molecular — template limpo (sem marca de terceiros).
-% Substitua todo "PREENCHER"; `agrck report ID` falha enquanto restar algum.
-\documentclass[a4paper,11pt]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage[brazilian]{babel}
-\usepackage{lmodern,microtype,amsmath,siunitx,booktabs,array,tabularx,graphicx,xcolor,float}
-\usepackage[margin=2.5cm]{geometry}
-\usepackage{fancyhdr}
-\usepackage[hidelinks]{hyperref}
-\usepackage[capitalise,noabbrev]{cleveref}
-\sisetup{output-decimal-marker={,}}
-\definecolor{inst}{RGB}{0,51,102}
-\newcommand{\instituicao}{PREENCHER instituição / grupo}
-\newcommand{\titulo}{PREENCHER título do estudo}
-\pagestyle{fancy}\fancyhf{}
-\lhead{\small\sffamily\textcolor{inst}{\instituicao}}
-\rhead{\small\sffamily\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
-
+% Relatório de docking molecular — modelo LaTeX do agente AgRCK4MolDocking.
+% Preencha General/Settings.tex e os capítulos; `agrck report ID` falha enquanto restar "PREENCHER".
+% Compilação: pdflatex main && bibtex main && pdflatex main && pdflatex main
+\documentclass[a4paper]{article}
+\input{General/Preamble}
+\input{General/Settings}
 \begin{document}
-\begin{titlepage}
-  \centering\vspace*{4cm}
-  {\LARGE\bfseries\textcolor{inst}{\titulo}\par}\vspace{1cm}
-  {\large PREENCHER autores\par}\vspace{0.5cm}
-  {\instituicao\par}\vfill
-  {\color{inst}\rule{\textwidth}{1pt}}\par\vspace{0.3cm}
-  {\today\par}
-\end{titlepage}
+
+% Capa
+\input{Chapters/0. Frontpage}
+\newpage
 
 \pagenumbering{roman}
-\section*{Resumo}\addcontentsline{toc}{section}{Resumo}
-\textbf{Contexto.} PREENCHER. \textbf{Objetivo.} PREENCHER. \textbf{Metodologia.} PREENCHER.
-\textbf{Resultados e discussão.} PREENCHER. \textbf{Conclusões.} PREENCHER (hipóteses + limitações).
 
-\textbf{Palavras-chave:} PREENCHER.
+% Resumo
+\input{Chapters/0. Abstract}
 \newpage
-\tableofcontents\thispagestyle{empty}
+
+% Sumário
+{\hypersetup{linkcolor=black}
+\tableofcontents\thispagestyle{empty}}
 \newpage
+
+% Lista de Símbolos, Siglas e Grandezas Físico-Químicas
+\input{Chapters/0. List of symbols}
+\newpage
+
+% Seção 1: Introdução e Contextualização
 \pagenumbering{arabic}
+\input{Chapters/1. Introduction}
+\newpage
 
-\section{Introdução}
-PREENCHER: alvo, sub-sítios, série de ligantes e dados experimentais (\cref{tab:estruturas}).
-\begin{table}[p]\centering
-  \caption{Estruturas 2D das moléculas estudadas (geradas dos SMILES usados no docking).}\label{tab:estruturas}
-  PREENCHER tabela com \texttt{\textbackslash includegraphics} das estruturas
-\end{table}
+% Seção 2: Protocolo de Modelagem Molecular
+\input{Chapters/2. Methodology}
+\newpage
 
-\section{Protocolo de modelagem molecular}
-PREENCHER: preparo (microespécie no pH do ensaio), amostragem, minimização, validação física,
-escores ($\Delta G_{\text{Vina}}$, $\text{CNN}_{\text{score}}$, $\text{CNN}_{\text{affinity}}$,
-$\text{LE}_{\text{Vina}}$), seleção pré-registrada e interações (distância + ângulo).
+% Seção 3: Resultados e Discussão
+\input{Chapters/3. Results}
+\newpage
 
-\section{Resultados e discussão}
-\subsection{Validação por redocking} PREENCHER (RMSD).
-\subsection{Escores: todas as métricas} PREENCHER (métrica primária; dependência da métrica).
-\subsection{Modo de ligação e interações} PREENCHER (cada interação com o fragmento do ligante).
+% Seção 4: Conclusões, Limitações e Perspectivas
+\input{Chapters/4. Conclusions}
+\newpage
 
-\section{Conclusões, limitações e perspectivas}
-PREENCHER: hipóteses testáveis; limitações (receptor rígido, sem águas, escores semiquantitativos, microespécie).
-
+% Referências Bibliográficas
 \bibliographystyle{plain}
-\bibliography{referencias}
+\bibliography{General/References}
+
 \end{document}
