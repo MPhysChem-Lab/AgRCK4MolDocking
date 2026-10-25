@@ -9,6 +9,10 @@
   <img src="docs/img/hero_ache_quercitrina.png" alt="Quercitrina no sítio ativo da acetilcolinesterase humana" width="100%">
 </p>
 
+<p align="center">
+  <img src="docs/anim/animacao_ache_quercitrina_limpa.avif" alt="Animação: quercitrina na garganta da acetilcolinesterase humana" width="100%">
+</p>
+
 ---
 
 ## Sumário
