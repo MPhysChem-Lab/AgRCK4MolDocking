@@ -11,7 +11,7 @@ O Codex usa o git da máquina. Use SSH com chave cadastrada no GitHub, ou HTTPS 
 
 ## 2. Marketplace e plugin
 ```bash
-codex plugin marketplace add git@github.com:fatioleg/AgRCK4MolDocking.git     # ou: fatioleg/AgRCK4MolDocking
+codex plugin marketplace add git@github.com:MPhysChem-Lab/AgRCK4MolDocking.git     # ou: MPhysChem-Lab/AgRCK4MolDocking
 codex plugin marketplace list
 ```
 No Codex: `/plugins`, aba **AgRCK4MolDocking**, selecione `agrck4moldocking` e instale com Espaço. Abra uma
@@ -24,7 +24,7 @@ mkdir -p ~/.agents/skills && cp -r AgRCK4MolDocking/skills/agrck-* ~/.agents/ski
 
 ## 3. CLI, AGENTS.md e hooks (script)
 ```bash
-git clone git@github.com:fatioleg/AgRCK4MolDocking.git ~/AgRCK4MolDocking
+git clone git@github.com:MPhysChem-Lab/AgRCK4MolDocking.git ~/AgRCK4MolDocking
 sh ~/AgRCK4MolDocking/scripts/install_codex.sh            # pergunta antes de alterar ~/.codex
 ```
 O script:

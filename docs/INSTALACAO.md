@@ -1,7 +1,7 @@
 # Instalação do ambiente científico (Linux x86_64, Python 3.12)
 
 ```bash
-git clone git@github.com:fatioleg/AgRCK4MolDocking.git && cd AgRCK4MolDocking
+git clone git@github.com:MPhysChem-Lab/AgRCK4MolDocking.git && cd AgRCK4MolDocking
 python3 -m venv .venv
 git clone https://github.com/Arcadia-Science/agentic-pymol tools/agentic-pymol   # MCP do PyMOL (opcional)
 .venv/bin/pip install -r pipeline/requirements.txt

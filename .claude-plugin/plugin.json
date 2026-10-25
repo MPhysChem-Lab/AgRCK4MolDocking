@@ -3,6 +3,6 @@
   "version": "1.1.0",
   "description": "Agente de docking molecular (DiffDock + GNINA + PoseBusters + ProLIF) com portões automáticos, memória por estudo, orquestração de modelos e travas contra os erros de estudos anteriores.",
   "author": { "name": "fatioleg" },
-  "repository": "https://github.com/fatioleg/AgRCK4MolDocking",
+  "repository": "https://github.com/MPhysChem-Lab/AgRCK4MolDocking",
   "keywords": ["docking", "diffdock", "gnina", "prolif", "medicinal-chemistry", "sar"]
 }

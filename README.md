@@ -257,7 +257,7 @@ referências cruzadas, campos ainda não preenchidos e a linguagem do texto.
 **1. Ambiente científico (Linux x86_64, Python 3.12)** — passo a passo em [docs/INSTALACAO.md](docs/INSTALACAO.md):
 
 ```bash
-git clone git@github.com:fatioleg/AgRCK4MolDocking.git && cd AgRCK4MolDocking
+git clone git@github.com:MPhysChem-Lab/AgRCK4MolDocking.git && cd AgRCK4MolDocking
 python3 -m venv .venv && .venv/bin/pip install -r pipeline/requirements.txt
 mkdir -p ~/.config/agrck && cp pipeline/.env.example ~/.config/agrck/.env   # coloque a NVIDIA_API_KEY no editor
 bin/agrck doctor                                                             # confere tudo (sem exibir a chave)
@@ -266,14 +266,14 @@ bin/agrck doctor                                                             # c
 **2. Plugin no Claude Code** — detalhes em [docs/PLUGIN_CLAUDE_CODE.md](docs/PLUGIN_CLAUDE_CODE.md):
 
 ```bash
-claude plugin marketplace add fatioleg/AgRCK4MolDocking
+claude plugin marketplace add MPhysChem-Lab/AgRCK4MolDocking
 claude plugin install agrck4moldocking@agrck
 ```
 
 **3. Plugin no Codex** — detalhes em [docs/PLUGIN_CODEX.md](docs/PLUGIN_CODEX.md):
 
 ```bash
-codex plugin marketplace add git@github.com:fatioleg/AgRCK4MolDocking.git   # depois: /plugins no Codex
+codex plugin marketplace add git@github.com:MPhysChem-Lab/AgRCK4MolDocking.git   # depois: /plugins no Codex
 ```
 
 ---

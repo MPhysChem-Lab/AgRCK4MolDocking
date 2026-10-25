@@ -14,12 +14,12 @@ export CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1   # opcional: força HTTPS
 ## 2. Adicionar o marketplace e instalar
 Dentro do Claude Code:
 ```text
-/plugin marketplace add fatioleg/AgRCK4MolDocking
+/plugin marketplace add MPhysChem-Lab/AgRCK4MolDocking
 /plugin install agrck4moldocking@agrck
 ```
 Ou pelo terminal:
 ```bash
-claude plugin marketplace add fatioleg/AgRCK4MolDocking
+claude plugin marketplace add MPhysChem-Lab/AgRCK4MolDocking
 claude plugin install agrck4moldocking@agrck --scope user
 ```
 Reinicie a sessão. Verifique com `/plugin`: em *Installed*, devem aparecer 6 skills, 4 agents, hooks e o MCP
