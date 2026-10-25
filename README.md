@@ -10,10 +10,13 @@
 </p>
 
 <p align="center"><sub>
-<b>Exemplo de resultado.</b> (A) Acetilcolinesterase humana (PDB 4EY6) com a quercitrina na garganta do sítio ativo.
-(B) Corte da superfície do bolso, colorida por tipo de resíduo, com os resíduos de ancoragem em destaque e as interações
-identificadas pelo ProLIF: ligação de hidrogênio do anel catecol com Thr83 (amarelo), empilhamento π com Tyr124/Tyr337
-(magenta) e contatos hidrofóbicos (cinza). Figura gerada pelo agente com PyMOL open-source.
+<b>Exemplo de resultado: quercitrina na acetilcolinesterase humana (PDB 4EY6).</b>
+(A) A enzima inteira, colorida do N- ao C-terminal; o círculo marca a garganta do sítio ativo, onde fica a pose selecionada.
+(B) Corte da superfície do bolso, colorida por tipo de resíduo, com os resíduos que tocam o ligante. As interações foram
+tipificadas pelo ProLIF no receptor protonado em pH 7,4: ligação de hidrogênio da hidroxila do catecol (anel B) com Thr83
+(3,05 Å; ângulo D–H···A de 170°), empilhamento π do anel C com Tyr124 e Tyr337 e contatos hidrofóbicos com Asp74, Trp86,
+Trp286, Phe297, Phe338 e Tyr341. A pose é uma hipótese estrutural do docking, não uma medida experimental.
+Figura gerada pelo agente com PyMOL open-source.
 </sub></p>
 
 ---
