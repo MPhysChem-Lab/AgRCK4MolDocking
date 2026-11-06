@@ -5,13 +5,12 @@ O Codex lê o marketplace em `.agents/plugins/marketplace.json` (marketplace `ag
 (`hooks/hooks.codex.json`, caminhos via `${PLUGIN_ROOT}`). O script do passo 3 cuida do CLI e do `AGENTS.md`
 na pasta de trabalho, e serve de alternativa para instalar os hooks em versões do Codex sem hooks de plugin.
 
-## 1. Acesso ao repositório privado
-O Codex usa o git da máquina. Use SSH com chave cadastrada no GitHub, ou HTTPS com credential helper
-(`gh auth login`).
+## 1. Acesso ao repositório
+O repositório é público e o Codex usa o git da máquina: o clone por HTTPS funciona sem login.
 
 ## 2. Marketplace e plugin
 ```bash
-codex plugin marketplace add git@github.com:MPhysChem-Lab/AgRCK4MolDocking.git     # ou: MPhysChem-Lab/AgRCK4MolDocking
+codex plugin marketplace add https://github.com/MPhysChem-Lab/AgRCK4MolDocking.git   # ou: MPhysChem-Lab/AgRCK4MolDocking
 codex plugin marketplace list
 ```
 No Codex: `/plugins`, aba **AgRCK4MolDocking**, selecione `agrck4moldocking` e instale com Espaço. Abra uma
@@ -24,7 +23,7 @@ mkdir -p ~/.agents/skills && cp -r AgRCK4MolDocking/skills/agrck-* ~/.agents/ski
 
 ## 3. CLI, AGENTS.md e hooks (script)
 ```bash
-git clone git@github.com:MPhysChem-Lab/AgRCK4MolDocking.git ~/AgRCK4MolDocking
+git clone https://github.com/MPhysChem-Lab/AgRCK4MolDocking.git ~/AgRCK4MolDocking
 sh ~/AgRCK4MolDocking/scripts/install_codex.sh            # pergunta antes de alterar ~/.codex
 ```
 O script:

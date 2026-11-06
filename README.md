@@ -361,5 +361,5 @@ McNutt *et al.*, GNINA 1.3, *J. Cheminform.* 2025 · Bouysset & Fiorucci, ProLIF
 Olsson *et al.*, PROPKA3, *JCTC* 2011 · Riniker & Landrum, ETKDG, *JCIM* 2015 · Golden & Kiefl, Agentic PyMOL, 2026.
 A lista completa está em [docs/PROTOCOLO.md](docs/PROTOCOLO.md).
 
-Licença em [LICENSE](LICENSE). Os componentes de terceiros mantêm suas próprias licenças, e o renderizador do
+Licença MIT, em [LICENSE](LICENSE). Os componentes de terceiros mantêm suas próprias licenças, e o renderizador do
 specboard é Apache-2.0.
