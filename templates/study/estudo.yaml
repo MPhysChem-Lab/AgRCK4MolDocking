@@ -41,7 +41,7 @@ saidas:
 
 execucao:
   onde: "local"                   # local | ssh
-  host_ssh: ""                    # ex.: myhome
+  host_ssh: ""                    # ex.: meu-servidor
   dir_remoto: ""                  # repositório no host remoto
 
 orcamento:

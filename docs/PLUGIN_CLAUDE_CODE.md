@@ -3,12 +3,10 @@
 O repositório é ao mesmo tempo **plugin** (`.claude-plugin/plugin.json`) e **marketplace**
 (`.claude-plugin/marketplace.json`, marketplace `agrck`, plugin `agrck4moldocking`).
 
-## 1. Pré-requisito: acesso ao repositório privado
-O Claude Code não pede senha. O clone precisa funcionar sem interação:
+## 1. Pré-requisito
+O repositório é público: o clone funciona sem login. Se o Claude Code tentar SSH e falhar, force HTTPS:
 ```bash
-gh auth login            # HTTPS com credential helper do gh
-# ou chave SSH sem senha cadastrada no GitHub
-export CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1   # opcional: força HTTPS
+export CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1
 ```
 
 ## 2. Adicionar o marketplace e instalar

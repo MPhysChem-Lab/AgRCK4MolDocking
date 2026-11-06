@@ -45,9 +45,9 @@ Versões fixadas: `numpy==1.26.4` (o wheel do PyMOL quebra com numpy 2) e `mcp==
 API v1).
 
 ## Execução remota
-Se o pipeline roda num servidor (ex.: `ssh myhome`), instale lá e use no `estudo.yaml`:
+Se o pipeline roda num servidor (ex.: `ssh meu-servidor`), instale lá e use no `estudo.yaml`:
 - `execucao.onde: ssh`;
-- `host_ssh: myhome`;
+- `host_ssh: meu-servidor`;
 - `dir_remoto: ~/AgRCK4MolDocking`.
 
 O agente sincroniza `estudos/<ID>` nos dois sentidos, sem copiar o `.env`.
