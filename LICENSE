@@ -19,9 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-Third-party components keep their own licenses and are not covered by this
-license (RDKit BSD-3; GNINA Apache-2.0/GPL-2.0; ProLIF Apache-2.0;
-PoseBusters BSD-3; PDB2PQR/PROPKA BSD-3; open-source PyMOL; Agentic PyMOL MIT;
-vendor/specboard Apache-2.0; DiffDock via NVIDIA NIM terms).
